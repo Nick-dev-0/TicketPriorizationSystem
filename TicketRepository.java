@@ -1,35 +1,34 @@
 package TicketPriorizationSystem;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TicketRepository {
-    private final List<Ticket> tickets = new ArrayList<>();
+    private final Map<Integer, Ticket> tickets = new HashMap<>();
+    
 
-    public List<Ticket> allTickets() {
-        List<Ticket> ticketsCopy = new ArrayList<>(tickets);
+    public Map<Integer, Ticket> allTickets() {
+        Map<Integer, Ticket> ticketsCopy = new HashMap<>(tickets);
         return ticketsCopy;
   }
 
   public void addTicket(Ticket ticket) {
-        tickets.add(ticket);
+    if (!tickets.containsKey(ticket.getId())) {
+        tickets.put(ticket.getId(), ticket);
+    }
   }
 
   public Ticket findTicket(int id) {
-    for (Ticket ticket : tickets) {
-        if (ticket.getId() == id) {
-            return ticket;
+        if (tickets.get(id) != null) {
+            return tickets.get(id);
         }
-    }
     return null;
   }
 
   public boolean updateSeverity(int id, SeverityLevel severity) {
-    for (Ticket ticket : tickets) {
-        if (ticket.getId() == id) {
-            ticket.setSeverity(severity);
+        if (tickets.get(id) != null) {
+            tickets.get(id).setSeverity(severity);
             return true;
-        }
      }
      return false;
   }
