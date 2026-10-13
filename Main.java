@@ -1,14 +1,12 @@
 package TicketPriorizationSystem;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-    List<Ticket> tickets = new ArrayList<>();
+    TicketRepository ticketRepository = new TicketRepository();
 
-    tickets.add(new Ticket(
+    ticketRepository.addTicket(new Ticket(
             1,
             "Login page unavailable",
             "Users cannot log in to the application.",
@@ -16,7 +14,7 @@ public class Main {
             Instant.parse("2026-10-12T09:00:00Z")
     ));
 
-    tickets.add(new Ticket(
+    ticketRepository.addTicket(new Ticket(
             2,
             "Profile page loading slowly",
             "The profile page takes several seconds to load.",
@@ -24,7 +22,7 @@ public class Main {
             Instant.parse("2026-10-12T10:30:00Z")
     ));
 
-    tickets.add(new Ticket(
+    ticketRepository.addTicket(new Ticket(
             3,
             "Payment processing failure",
             "Some users cannot complete their payments.",
@@ -32,7 +30,7 @@ public class Main {
             Instant.parse("2026-10-12T09:45:00Z")
     ));
 
-    tickets.add(new Ticket(
+    ticketRepository.addTicket(new Ticket(
             4,
             "Application outage",
             "The main application is unavailable to all users.",
@@ -40,12 +38,9 @@ public class Main {
             Instant.parse("2026-10-12T08:30:00Z")
     ));
 
-    TicketRepository ticketRepository = new TicketRepository(tickets);
     TicketService ticketService = new TicketService(ticketRepository);
-
 
     System.out.println(ticketService.ticketSeveritySorted());
 
-    
     }
 }
