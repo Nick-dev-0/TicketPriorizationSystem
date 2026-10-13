@@ -14,4 +14,13 @@ public class TicketRepository {
   public void addTicket(Ticket ticket) {
         tickets.add(ticket);
   }
+
+  public Ticket findTicket(int id) {
+    for (Ticket ticket : tickets) {
+        if (ticket.getId() == id) {
+            return ticket;
+        }
+    }
+    return null;
+  }
 }

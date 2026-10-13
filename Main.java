@@ -42,5 +42,6 @@ public class Main {
 
     System.out.println(ticketService.ticketSeveritySorted());
 
+    System.out.println(ticketRepository.findTicket(5));
     }
 }
