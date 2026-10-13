@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TicketService {
-    private TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
 
     public TicketService(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
@@ -14,7 +14,7 @@ public class TicketService {
     public List<Ticket> ticketSeveritySorted() {
         List<Ticket> allTickets = this.ticketRepository.allTickets();
         List<Ticket> sortedBySeverity = new ArrayList<>(allTickets);
-        sortedBySeverity.sort(Comparator.comparing(Ticket::getSeverity));
+        sortedBySeverity.sort(Comparator.comparing(Ticket::getSeverity).thenComparing(Ticket::getTimestamp));
         return sortedBySeverity;
     }
 }
