@@ -7,9 +7,6 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
     List<Ticket> tickets = new ArrayList<>();
-    TicketRepository ticketRepository = new TicketRepository(tickets);
-    TicketService ticketService = new TicketService(ticketRepository);
-
 
     tickets.add(new Ticket(
             1,
@@ -42,6 +39,10 @@ public class Main {
             SeverityLevel.SEV1,
             Instant.parse("2026-10-12T08:30:00Z")
     ));
+
+    TicketRepository ticketRepository = new TicketRepository(tickets);
+    TicketService ticketService = new TicketService(ticketRepository);
+
 
     System.out.println(ticketService.ticketSeveritySorted());
 

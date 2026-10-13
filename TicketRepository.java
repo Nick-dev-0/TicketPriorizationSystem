@@ -1,16 +1,18 @@
 package TicketPriorizationSystem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TicketRepository {
-    List<Ticket> tickets;
+    private final List<Ticket> tickets;
     
     public TicketRepository(List<Ticket> tickets) {
-        this.tickets = tickets;
+        this.tickets = new ArrayList<>(tickets);
     }
 
     public List<Ticket> allTickets() {
-        return this.tickets;
+        List<Ticket> ticketsCopy = new ArrayList<>(tickets);
+        return ticketsCopy;
   }
-  
+
 }
