@@ -23,4 +23,14 @@ public class TicketRepository {
     }
     return null;
   }
+
+  public boolean updateSeverity(int id, SeverityLevel severity) {
+    for (Ticket ticket : tickets) {
+        if (ticket.getId() == id) {
+            ticket.setSeverity(severity);
+            return true;
+        }
+     }
+     return false;
+  }
 }

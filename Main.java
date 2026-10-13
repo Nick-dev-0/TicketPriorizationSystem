@@ -43,5 +43,11 @@ public class Main {
     System.out.println(ticketService.ticketSeveritySorted());
 
     System.out.println(ticketRepository.findTicket(5));
+    boolean updateResult = ticketRepository.updateSeverity(1, SeverityLevel.SEV4);
+
+    if (updateResult) {
+        System.out.println(ticketService.ticketSeveritySorted());
+    }
+
     }
 }
