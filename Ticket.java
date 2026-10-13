@@ -67,4 +67,13 @@ public class Ticket {
     public Instant getTimestamp() {
         return timestamp;
     }
+
+    @Override 
+    public String toString() {
+        return "ID: " + id +
+                " | Title: " + title +
+                " | Description: " + description +
+                " | Severity: " + severity +
+                " | Timestamp: " + timestamp + "\n";
+    }
 }

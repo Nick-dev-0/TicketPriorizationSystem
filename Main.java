@@ -1,0 +1,50 @@
+package TicketPriorizationSystem;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+    List<Ticket> tickets = new ArrayList<>();
+    TicketRepository ticketRepository = new TicketRepository(tickets);
+    TicketService ticketService = new TicketService(ticketRepository);
+
+
+    tickets.add(new Ticket(
+            1,
+            "Login page unavailable",
+            "Users cannot log in to the application.",
+            SeverityLevel.SEV1,
+            Instant.parse("2026-10-12T09:00:00Z")
+    ));
+
+    tickets.add(new Ticket(
+            2,
+            "Profile page loading slowly",
+            "The profile page takes several seconds to load.",
+            SeverityLevel.SEV3,
+            Instant.parse("2026-10-12T10:30:00Z")
+    ));
+
+    tickets.add(new Ticket(
+            3,
+            "Payment processing failure",
+            "Some users cannot complete their payments.",
+            SeverityLevel.SEV2,
+            Instant.parse("2026-10-12T09:45:00Z")
+    ));
+
+    tickets.add(new Ticket(
+            4,
+            "Application outage",
+            "The main application is unavailable to all users.",
+            SeverityLevel.SEV1,
+            Instant.parse("2026-10-12T08:30:00Z")
+    ));
+
+    System.out.println(ticketService.ticketSeveritySorted());
+
+    
+    }
+}
