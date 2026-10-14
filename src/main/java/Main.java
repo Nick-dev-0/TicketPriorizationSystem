@@ -1,4 +1,4 @@
-package TicketPriorizationSystem;
+package TicketPriorizationSystem.src.main.java;
 
 import java.time.Instant;
 
