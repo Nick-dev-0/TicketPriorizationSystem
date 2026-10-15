@@ -12,10 +12,12 @@ public class TicketRepository {
         return ticketsCopy;
   }
 
-  public void addTicket(Ticket ticket) {
+  public boolean addTicket(Ticket ticket) {
     if (!tickets.containsKey(ticket.getId())) {
         tickets.put(ticket.getId(), ticket);
+        return true;
     }
+    return false;
   }
 
   public Ticket findTicket(int id) {
