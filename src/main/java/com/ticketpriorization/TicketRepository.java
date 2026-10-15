@@ -1,4 +1,4 @@
-package TicketPriorizationSystem.src.main.java;
+package com.ticketpriorization;
 
 import java.util.HashMap;
 import java.util.Map;

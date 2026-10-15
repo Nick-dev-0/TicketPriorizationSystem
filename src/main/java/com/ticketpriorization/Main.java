@@ -1,7 +1,6 @@
-package TicketPriorizationSystem.src.main.java;
+package com.ticketpriorization;
 
 import java.time.Instant;
-
 public class Main {
     public static void main(String[] args) {
     TicketRepository ticketRepository = new TicketRepository();

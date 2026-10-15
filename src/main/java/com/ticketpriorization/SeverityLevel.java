@@ -1,4 +1,4 @@
-package TicketPriorizationSystem.src.main.java;
+package com.ticketpriorization;
 
 public enum SeverityLevel {
     SEV1,
