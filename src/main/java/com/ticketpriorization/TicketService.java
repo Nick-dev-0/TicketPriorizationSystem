@@ -19,4 +19,17 @@ public class TicketService {
         
         return sortedBySeverity;
     }
+
+    public boolean addTicket(Ticket ticket) {
+        return ticketRepository.addTicket(ticket);
+    }
+
+    public Ticket findTicket(int id) {
+        return ticketRepository.findTicket(id);
+    }
+
+    public boolean updateSeverity(int id, SeverityLevel severity) {
+        return ticketRepository.updateSeverity(id, severity);
+    }
+
 }
