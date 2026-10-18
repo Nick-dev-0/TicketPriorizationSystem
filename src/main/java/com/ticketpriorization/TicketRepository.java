@@ -6,10 +6,13 @@ import java.util.Map;
 public class TicketRepository {
     private final Map<Integer, Ticket> tickets = new HashMap<>();
     
-
     public Map<Integer, Ticket> allTickets() {
-        Map<Integer, Ticket> ticketsCopy = new HashMap<>(tickets);
-        return ticketsCopy;
+        Map<Integer, Ticket> fullTicketCopy = new HashMap<>(tickets);
+        
+        for (Map.Entry<Integer, Ticket> tickets : fullTicketCopy.entrySet()) {
+            fullTicketCopy.put(tickets.getKey(), new Ticket(tickets.getValue()));
+        }
+        return fullTicketCopy;
   }
 
   public boolean addTicket(Ticket ticket) {

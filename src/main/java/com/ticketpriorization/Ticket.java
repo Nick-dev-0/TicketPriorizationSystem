@@ -27,6 +27,14 @@ public class Ticket {
         );
     }
 
+    public Ticket(Ticket ticket) {
+        this(requireTicket(ticket).getId(), requireTicket(ticket).getTitle(), requireTicket(ticket).getDescription(), requireTicket(ticket).getSeverity(), requireTicket(ticket).getTimestamp());
+    }
+
+    public static Ticket requireTicket(Ticket ticket) {
+        return Objects.requireNonNull(ticket);
+    }
+
     private String validateText(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(fieldName + " cannot be null or blank.");
