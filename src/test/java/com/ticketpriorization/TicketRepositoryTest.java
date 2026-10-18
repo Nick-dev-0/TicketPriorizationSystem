@@ -1,5 +1,6 @@
 package com.ticketpriorization;
 import java.time.Instant;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -9,15 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 public class TicketRepositoryTest {
     private TicketRepository ticketRepository;
+    private TicketService ticketService;
     
     @BeforeEach 
     void setUp() {
         ticketRepository = new TicketRepository();
+        ticketService = new TicketService(ticketRepository);
     }
-    
     
     @Test
     @DisplayName("ticketRepository should add the ticket")
@@ -129,5 +130,31 @@ public class TicketRepositoryTest {
 
         assertEquals(SeverityLevel.SEV1, ticket.getSeverity(),
             "The existing ticket's severity should remain unchanged");
+    }
+
+    @Test 
+    @DisplayName("allTickets should return independent ticket copies")
+    void allTickets() {
+        Ticket ticket = new Ticket(
+        1,
+        "Login page unavailable",
+        "Users cannot log in to the application.",
+        SeverityLevel.SEV1,
+        Instant.parse("2026-10-12T09:00:00Z")
+        );
+
+        assertTrue(ticketRepository.addTicket(ticket),"Ticket should be added successfully");
+
+        Map<Integer, Ticket> allTickets = ticketRepository.allTickets();
+        assertNotNull(allTickets, "Returned map should not be null");
+
+        Ticket retrievedTicket = allTickets.get(1);
+        assertNotNull(retrievedTicket, "Returned map should contain the ticket");
+
+        retrievedTicket.setSeverity(SeverityLevel.SEV3);
+
+        Ticket storedTicket = ticketRepository.findTicket(1);
+
+        assertEquals(SeverityLevel.SEV1, storedTicket.getSeverity(), "Modifying a returned ticket should not change the stored ticket");
     }
 }
