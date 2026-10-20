@@ -1,0 +1,25 @@
+package com.ticketpriorization.controller;
+
+import com.ticketpriorization.CreateTicketRequest;
+import com.ticketpriorization.Ticket;
+import com.ticketpriorization.TicketService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+public class TicketsController {
+    private final TicketService ticketService;
+
+    public TicketsController(TicketService ticketService) {
+        this.ticketService = ticketService;
+    }
+
+    @GetMapping("/api/tickets")
+    public List<Ticket> tickets() {
+        return ticketService.ticketSeveritySorted();
+    }
+}
