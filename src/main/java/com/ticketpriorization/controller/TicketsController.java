@@ -3,6 +3,8 @@ package com.ticketpriorization.controller;
 import com.ticketpriorization.CreateTicketRequest;
 import com.ticketpriorization.Ticket;
 import com.ticketpriorization.TicketService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,5 +23,14 @@ public class TicketsController {
     @GetMapping("/api/tickets")
     public List<Ticket> tickets() {
         return ticketService.ticketSeveritySorted();
+    }
+
+    @PostMapping("/api/tickets")
+    public ResponseEntity<Ticket> createTicket(@RequestBody CreateTicketRequest request) {
+        Ticket ticket = ticketService.createTicket(request);
+        if (ticket == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(ticket);
     }
 }
