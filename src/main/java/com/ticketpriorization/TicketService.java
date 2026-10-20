@@ -1,13 +1,17 @@
 package com.ticketpriorization;
 
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class TicketService {
     private final TicketRepository ticketRepository;
-
+    int id = 0;
     public TicketService(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
     }
@@ -21,7 +25,20 @@ public class TicketService {
     }
 
     public boolean addTicket(Ticket ticket) {
-        return ticketRepository.addTicket(ticket);
+        boolean addTicketStatus = ticketRepository.addTicket(ticket);
+        if (addTicketStatus) {
+            this.id += 1;
+        }
+        return addTicketStatus;
+    }
+
+
+    public Ticket createTicket(CreateTicketRequest ticketRequest) {
+        Ticket builtTicket = new Ticket(id + 1, ticketRequest.getTitle(), ticketRequest.getDescription(), ticketRequest.getSeverityLevel(), Instant.now());
+        if (addTicket(builtTicket)) {
+            return builtTicket;
+        }
+        return null;
     }
 
     public Ticket findTicket(int id) {
