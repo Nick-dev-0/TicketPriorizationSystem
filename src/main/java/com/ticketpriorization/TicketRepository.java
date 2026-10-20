@@ -1,8 +1,11 @@
 package com.ticketpriorization;
 
+import org.springframework.stereotype.Repository;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Repository
 public class TicketRepository {
     private final Map<Integer, Ticket> tickets = new HashMap<>();
     
