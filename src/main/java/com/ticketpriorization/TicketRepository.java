@@ -33,6 +33,7 @@ public class TicketRepository {
     return null;
   }
 
+
   public boolean updateSeverity(int id, SeverityLevel severity) {
         if (tickets.get(id) != null) {
             tickets.get(id).setSeverity(severity);
@@ -40,4 +41,14 @@ public class TicketRepository {
      }
      return false;
   }
+
+    public boolean updateTicket(String title, String description, SeverityLevel severity, int id) {
+        if (tickets.get(id) != null) {
+            tickets.get(id).setTitle(title);
+            tickets.get(id).setDescription(description);
+            tickets.get(id).setSeverity(severity);
+            return true;
+        }
+        return false;
+    }
 }

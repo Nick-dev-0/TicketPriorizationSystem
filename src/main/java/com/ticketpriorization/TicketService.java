@@ -49,4 +49,7 @@ public class TicketService {
         return ticketRepository.updateSeverity(id, severity);
     }
 
+    public boolean updateTicket(String title, String description, SeverityLevel severity, int id) {
+        return ticketRepository.updateTicket(title, description, severity, id);
+    }
 }
