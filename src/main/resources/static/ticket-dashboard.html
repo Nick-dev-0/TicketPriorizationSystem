@@ -57,6 +57,7 @@
             <th scope="col">Title</th>
             <th scope="col">Description</th>
             <th scope="col">Severity</th>
+            <th scope="col">Created Date</th>
             <th scope="col">ID</th>
             <th scope="col">Edit</th>
         </tr>
@@ -156,6 +157,20 @@
             tSeverity.textContent = ticket.severity;
             tRow.appendChild(tSeverity);
 
+            const createdDate = new Date(ticket["timestamp"]);
+            const formattedDate = createdDate.toLocaleString("en-US", {
+                month: "numeric",
+                day: "numeric",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hourCycle: "h23",
+                timeZoneName: "short"
+            });
+            const tcreatedDate = document.createElement("td");
+            tcreatedDate.textContent = formattedDate;
+            tRow.appendChild(tcreatedDate);
+
             const tID = document.createElement("td");
             tID.textContent = ticket.id;
             tRow.appendChild(tID);
@@ -182,7 +197,6 @@
             });
 
             tBody.appendChild(tRow);
-
         }
     }
 
