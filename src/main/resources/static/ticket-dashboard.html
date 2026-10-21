@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ticket Dashboard</title>
 
+    <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"></head>
 <body>
 
@@ -37,10 +38,10 @@
                     id="severity"
                     name="severity"
                     required>
-                <option value="SEV1">SEV1</option>
-                <option value="SEV2">SEV2</option>
-                <option value="SEV3">SEV3</option>
-                <option value="SEV4">SEV4</option>
+                <option value="SEV1" class="severity-sev1">SEV1</option>
+                <option value="SEV2" class="severity-sev2">SEV2</option>
+                <option value="SEV3" class="severity-sev3">SEV3</option>
+                <option value="SEV4" class="severity-sev4">SEV4</option>
             </select>
         </div>
 
@@ -141,6 +142,12 @@
 
         tBody.innerHTML = "";
 
+        const severityClasses = {
+            "SEV1": "severity-sev1",
+            "SEV2": "severity-sev2",
+            "SEV3": "severity-sev3",
+            "SEV4": "severity-sev4"
+        }
         for (const ticket of data) {
             const tRow = document.createElement("tr");
 
@@ -154,7 +161,16 @@
             tRow.appendChild(tDescription);
 
             const tSeverity = document.createElement("td");
-            tSeverity.textContent = ticket.severity;
+            const span = document.createElement("span");
+            span.textContent = ticket.severity;
+
+            span.classList.add("badge");
+            span.classList.add("badge-pill");
+
+            const severityStyle = severityClasses[ticket.severity];
+            span.classList.add(severityStyle);
+
+            tSeverity.appendChild(span);
             tRow.appendChild(tSeverity);
 
             const createdDate = new Date(ticket["timestamp"]);
