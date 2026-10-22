@@ -9,6 +9,7 @@ public class Ticket {
     private String description;
     private SeverityLevel severity;
     private final Instant timestamp;
+    private Status status;
 
     public Ticket(int id, String title, String description, SeverityLevel severity, Instant timestamp) {
 
@@ -25,10 +26,13 @@ public class Ticket {
         this.timestamp = Objects.requireNonNull(
                 timestamp, "Timestamp cannot be null."
         );
+
+        this.status = Status.OPEN;
     }
 
     public Ticket(Ticket ticket) {
         this(requireTicket(ticket).getId(), requireTicket(ticket).getTitle(), requireTicket(ticket).getDescription(), requireTicket(ticket).getSeverity(), requireTicket(ticket).getTimestamp());
+        this.status = requireTicket(ticket).getStatus();
     }
 
     public static Ticket requireTicket(Ticket ticket) {
@@ -83,5 +87,13 @@ public class Ticket {
                 " | Description: " + description +
                 " | Severity: " + severity +
                 " | Timestamp: " + timestamp + "\n";
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
