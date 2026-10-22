@@ -1,8 +1,13 @@
 package com.ticketpriorization;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class CreateTicketRequest {
+    @NotBlank
     private String title;
+    @NotBlank
     private String description;
+    @NotNull
     private SeverityLevel severity;
 
     public CreateTicketRequest() {

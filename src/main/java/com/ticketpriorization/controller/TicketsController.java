@@ -3,6 +3,7 @@ package com.ticketpriorization.controller;
 import com.ticketpriorization.CreateTicketRequest;
 import com.ticketpriorization.Ticket;
 import com.ticketpriorization.TicketService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +27,7 @@ public class TicketsController {
     }
 
     @PostMapping("/api/tickets")
-    public ResponseEntity<Ticket> createTicket(@RequestBody CreateTicketRequest request) {
+    public ResponseEntity<Ticket> createTicket(@Valid @RequestBody CreateTicketRequest request) {
         Ticket ticket = ticketService.createTicket(request);
         if (ticket == null) {
             return ResponseEntity.notFound().build();

@@ -3,6 +3,7 @@ package com.ticketpriorization.controller;
 import com.ticketpriorization.CreateTicketRequest;
 import com.ticketpriorization.Ticket;
 import com.ticketpriorization.TicketService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class TicketsIdController {
     }
 
     @PatchMapping("/api/tickets/{id}")
-    public ResponseEntity<Ticket> updateTicket(@PathVariable("id") int id, @RequestBody CreateTicketRequest request) {
+    public ResponseEntity<Ticket> updateTicket(@PathVariable("id") int id, @Valid @RequestBody CreateTicketRequest request) {
         Ticket ticket = ticketService.findTicket(id);
         if (ticket == null) {
             return ResponseEntity.notFound().build();
