@@ -18,3 +18,12 @@
     color: #254D35;
 }
 
+.status-open {
+    background-color: #dCE8F5;
+    color: #24476B;
+}
+
+.status-resolved {
+    background-color: #e0E6E2;
+    color: #34493B;
+}
