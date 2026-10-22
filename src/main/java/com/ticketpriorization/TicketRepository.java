@@ -42,11 +42,12 @@ public class TicketRepository {
      return false;
   }
 
-    public boolean updateTicket(String title, String description, SeverityLevel severity, int id) {
+    public boolean updateTicket(String title, String description, SeverityLevel severity, int id, Status status) {
         if (tickets.get(id) != null) {
             tickets.get(id).setTitle(title);
             tickets.get(id).setDescription(description);
             tickets.get(id).setSeverity(severity);
+            tickets.get(id).setStatus(status);
             return true;
         }
         return false;

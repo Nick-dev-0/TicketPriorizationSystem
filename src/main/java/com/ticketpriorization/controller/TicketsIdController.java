@@ -29,7 +29,7 @@ public class TicketsIdController {
         if (ticket == null) {
             return ResponseEntity.notFound().build();
         }
-        boolean ticketUpdateStatus = ticketService.updateTicket(request.getTitle(), request.getDescription(), request.getSeverityLevel(), id);
+        boolean ticketUpdateStatus = ticketService.updateTicket(request.getTitle(), request.getDescription(), request.getSeverityLevel(), id, request.getStatus());
         if (ticketUpdateStatus) {
             return ResponseEntity.ok(ticket);
         }

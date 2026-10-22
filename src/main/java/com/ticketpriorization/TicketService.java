@@ -12,6 +12,7 @@ import java.util.Map;
 public class TicketService {
     private final TicketRepository ticketRepository;
     int id = 0;
+
     public TicketService(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
     }
@@ -49,7 +50,7 @@ public class TicketService {
         return ticketRepository.updateSeverity(id, severity);
     }
 
-    public boolean updateTicket(String title, String description, SeverityLevel severity, int id) {
-        return ticketRepository.updateTicket(title, description, severity, id);
+    public boolean updateTicket(String title, String description, SeverityLevel severity, int id, Status status) {
+        return ticketRepository.updateTicket(title, description, severity, id, status);
     }
 }

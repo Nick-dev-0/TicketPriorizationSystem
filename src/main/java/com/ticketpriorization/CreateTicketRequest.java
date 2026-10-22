@@ -9,9 +9,11 @@ public class CreateTicketRequest {
     private String description;
     @NotNull
     private SeverityLevel severity;
+    @NotNull
+    private Status status;
 
     public CreateTicketRequest() {
-
+        this.status = Status.OPEN;
     }
 
     public String getTitle() {
@@ -36,5 +38,13 @@ public class CreateTicketRequest {
 
     public void setSeverity(SeverityLevel severity) {
         this.severity = severity;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
