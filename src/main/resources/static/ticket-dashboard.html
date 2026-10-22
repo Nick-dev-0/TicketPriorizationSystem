@@ -59,6 +59,7 @@
             <th scope="col">Description</th>
             <th scope="col">Severity</th>
             <th scope="col">Created Date</th>
+            <th scope="col">Status</th>
             <th scope="col">ID</th>
             <th scope="col">Edit</th>
         </tr>
@@ -111,6 +112,18 @@
                                 <option value="SEV4" class="severity-sev4">SEV4</option>
                             </select>
                         </div>
+
+                        <div class="form-group">
+                            <label for="status-modal">Status</label>
+                            <select
+                                    class="form-control"
+                                    id="status-modal"
+                                    name="status-modal"
+                                    required>
+                                <option value="OPEN" class="status-open">OPEN</option>
+                                <option value="RESOLVED" class="status-resolved">RESOLVED</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -148,6 +161,12 @@
             "SEV3": "severity-sev3",
             "SEV4": "severity-sev4"
         }
+
+        const statusClasses = {
+            "OPEN": "status-open",
+            "RESOLVED": "status-resolved"
+        }
+
         for (const ticket of data) {
             const tRow = document.createElement("tr");
 
@@ -186,6 +205,19 @@
             const tcreatedDate = document.createElement("td");
             tcreatedDate.textContent = formattedDate;
             tRow.appendChild(tcreatedDate);
+
+            const tStatus = document.createElement("td");
+            const span1 = document.createElement("span");
+            span1.textContent = ticket.status
+
+            span1.classList.add("badge");
+            span1.classList.add("badge-pill");
+
+            const statusStyle = statusClasses[ticket.status];
+            span1.classList.add(statusStyle);
+
+            tStatus.appendChild(span1);
+            tRow.appendChild(tStatus);
 
             const tID = document.createElement("td");
             tID.textContent = ticket.id;
@@ -254,11 +286,13 @@
         const titleModal = document.getElementById("title-modal").value;
         const descriptionModal = document.getElementById("description-modal").value;
         const severityModal = document.getElementById("severity-modal").value;
+        const statusModal = document.getElementById("status-modal").value;
 
         const ticketData = {
             "title": titleModal,
             "description": descriptionModal,
-            "severity": severityModal
+            "severity": severityModal,
+            "status": statusModal
         }
 
         const response = await fetch(`/api/tickets/${editingTicketId}`, {
