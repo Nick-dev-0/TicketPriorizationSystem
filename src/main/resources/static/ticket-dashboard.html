@@ -60,7 +60,6 @@
             <th scope="col">Severity</th>
             <th scope="col">Created Date</th>
             <th scope="col">Status</th>
-            <th scope="col">ID</th>
             <th scope="col">Edit</th>
         </tr>
         </thead>
@@ -218,10 +217,6 @@
 
             tStatus.appendChild(span1);
             tRow.appendChild(tStatus);
-
-            const tID = document.createElement("td");
-            tID.textContent = ticket.id;
-            tRow.appendChild(tID);
 
             const edit = document.createElement("button");
             edit.type = "button";
