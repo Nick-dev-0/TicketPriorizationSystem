@@ -7,5 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TicketPriorizationApplication {
     public static void main(String[] args) {
         SpringApplication.run(TicketPriorizationApplication.class, args);
+
     }
 }

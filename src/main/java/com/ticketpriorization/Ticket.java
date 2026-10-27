@@ -2,22 +2,21 @@ package com.ticketpriorization;
 
 import java.time.Instant;
 import java.util.Objects;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "app_tickets")
 public class Ticket {
-    private final int id;
+    @Id
+    private String id;
     private String title;
     private String description;
     private SeverityLevel severity;
-    private final Instant timestamp;
+    private Instant timestamp;
     private Status status;
 
-    public Ticket(int id, String title, String description, SeverityLevel severity, Instant timestamp) {
+    public Ticket(String title, String description, SeverityLevel severity, Instant timestamp) {
 
-        if (id <= 0) {
-            throw new IllegalArgumentException("Ticket ID must be positive.");
-        }
-
-        this.id = id;
         this.title = validateText(title, "Title");
         this.description = validateText(description, "Description");
         this.severity = Objects.requireNonNull(
@@ -31,8 +30,13 @@ public class Ticket {
     }
 
     public Ticket(Ticket ticket) {
-        this(requireTicket(ticket).getId(), requireTicket(ticket).getTitle(), requireTicket(ticket).getDescription(), requireTicket(ticket).getSeverity(), requireTicket(ticket).getTimestamp());
+        this(requireTicket(ticket).getTitle(), requireTicket(ticket).getDescription(), requireTicket(ticket).getSeverity(), requireTicket(ticket).getTimestamp());
         this.status = requireTicket(ticket).getStatus();
+        this.id = requireTicket(ticket).getId();
+    }
+
+    public Ticket() {
+
     }
 
     public static Ticket requireTicket(Ticket ticket) {
@@ -46,7 +50,7 @@ public class Ticket {
         return value;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
