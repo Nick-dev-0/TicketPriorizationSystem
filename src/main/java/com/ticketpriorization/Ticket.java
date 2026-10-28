@@ -90,6 +90,7 @@ public class Ticket {
                 " | Title: " + title +
                 " | Description: " + description +
                 " | Severity: " + severity +
+                " | Status: " + status +
                 " | Timestamp: " + timestamp + "\n";
     }
 
