@@ -1,161 +1,160 @@
 package com.ticketpriorization;
 import java.time.Instant;
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.mongodb.test.autoconfigure.DataMongoTest;
 
+@DataMongoTest(properties = "spring.mongodb.database=ticket_system_test")
 public class TicketRepositoryTest {
+
+    @Autowired
     private TicketRepository ticketRepository;
-    private TicketService ticketService;
-    
-    @BeforeEach 
+
+    @BeforeEach
     void setUp() {
-        ticketRepository = new TicketRepository();
-        ticketService = new TicketService(ticketRepository);
+        ticketRepository.deleteAll();
     }
-    
+
     @Test
-    @DisplayName("ticketRepository should add the ticket")
-    void addTicket() {
-        boolean ticketResult = ticketRepository.addTicket(new Ticket(
-            2,
+    @DisplayName("Saving a ticket should generate an ID")
+    void saveTicketGeneratesId() {
+        Ticket ticket = new Ticket(
             "Login page unavailable",
             "Users cannot log in to the application.",
             SeverityLevel.SEV1,
             Instant.parse("2026-10-12T09:00:00Z")
-    ));
-        assertTrue(ticketResult, "ticketResult should return true");
+    );
+
+        Ticket ticketResult = ticketRepository.save(ticket);
+
+        assertNotNull(ticketResult);
+        assertNotNull(ticketResult.getId(), "ticketResults ID should not be null, and should have an ID");
+        assertEquals(ticket.getTitle(), ticketResult.getTitle(), "Titles should match");
+        assertEquals(ticket.getDescription(), ticketResult.getDescription(), "Descriptions should match");
+        assertEquals(ticket.getSeverity(), ticketResult.getSeverity(), "Severity should match");
     }
 
     @Test
-    @DisplayName("ticketRepository adds ticket and then tests with duplicate")
-    void addTicketDuplicateId() {
-        boolean ticketResult = ticketRepository.addTicket(new Ticket(
-        2,
-        "Login page unavailable",
-        "Users cannot log in to the application.",
-        SeverityLevel.SEV1,
-        Instant.parse("2026-10-12T09:00:00Z")));
-
-        assertTrue(ticketResult, "ticketResult should return true");
-
-        boolean ticketResultDuplicate = ticketRepository.addTicket(new Ticket(
-                2,
+    @DisplayName("A saved ticket should be findable by its ID")
+    void findByIdReturnsSavedTicket() {
+        Ticket ticket = new Ticket(
                 "Login page unavailable",
                 "Users cannot log in to the application.",
                 SeverityLevel.SEV1,
                 Instant.parse("2026-10-12T09:00:00Z")
-        ));
-        assertFalse(ticketResultDuplicate, "ticketResult should return false since it's a duplicate");
-        }
+        );
 
-    @Test
-    @DisplayName("Ticket should be found in ticketRepository")
-    void findTicketSuccess() {
-        int id = 1;
-        boolean ticketResult = ticketRepository.addTicket(new Ticket(
-            id,
-            "Login page unavailable",
-            "Users cannot log in to the application.",
-            SeverityLevel.SEV1,
-            Instant.parse("2026-10-12T09:00:00Z")
-    ));
+        Ticket ticketResult = ticketRepository.save(ticket);
 
-        assertTrue(ticketResult, "ticketResult should return true");
-    
-        Ticket findTicketResult = ticketRepository.findTicket(id);
-        assertNotNull(findTicketResult, "Ticket should be not null");
-        assertEquals(id, findTicketResult.getId(), "The found tickets ID should match the searched ID");
+        assertNotNull(ticketResult);
+
+        String ticketResultId = ticketResult.getId();
+
+        assertNotNull(ticketResultId);
+
+        Optional<Ticket> ticketFound = ticketRepository.findById(ticketResultId);
+
+        assertTrue(ticketFound.isPresent(), "Saved ticket should be found");
+
+        Ticket foundTicket = ticketFound.get();
+
+        assertEquals(ticket.getTitle(), foundTicket.getTitle(), "Titles should match");
+        assertEquals(ticket.getDescription(), foundTicket.getDescription(), "Descriptions should match");
+        assertEquals(ticket.getSeverity(), foundTicket.getSeverity(), "Severity should match");
+
     }
+
 
     @Test
     @DisplayName("Ticket should be be returned as null when searched")
-    void findTicketFailure() {    
-        Ticket findTicketResult = ticketRepository.findTicket(1);
-        assertNull(findTicketResult, "Ticket should be null");
+    void findTicketFailure() {
+        Optional<Ticket> ticketFound = ticketRepository.findById("00x000000000x0000");
+
+        assertFalse(ticketFound.isPresent());
     }
 
     @Test
-    @DisplayName("Updating severity should succeed for an existing ticket ID")
-    void updateSeverity() {
-        int id = 1;
-        SeverityLevel severity = SeverityLevel.SEV4;
-
-        Ticket ticket = new Ticket(
-            id,
-            "Login page unavailable",
-            "Users cannot log in to the application.",
-            SeverityLevel.SEV1,
-            Instant.parse("2026-10-12T09:00:00Z")
-        );
-
-        boolean ticketResult = ticketRepository.addTicket(ticket);
-        assertTrue(ticketResult, "ticketResult should return true");
-
-        boolean ticketUpdateResult = ticketRepository.updateSeverity(id, severity);
-
-        assertTrue(ticketUpdateResult, "ticketUpdateResult should return true");
-
-        assertEquals(severity, ticket.getSeverity(),
-            "The ticket's severity should be updated");
-    }
-
-    @Test
-    @DisplayName("Updating severity should fail for a non-existing ticket ID")
-    void updateSeverityFailure() {
-        int id = 1;
-        SeverityLevel severity = SeverityLevel.SEV4;
-
-        Ticket ticket = new Ticket(
-            id,
-            "Login page unavailable",
-            "Users cannot log in to the application.",
-            SeverityLevel.SEV1,
-            Instant.parse("2026-10-12T09:00:00Z")
-        );
-
-        boolean ticketResult = ticketRepository.addTicket(ticket);
-        assertTrue(ticketResult, "ticketResult should return true");
-
-        boolean ticketUpdateResult = ticketRepository.updateSeverity(id + 1, severity);
-
-        assertFalse(ticketUpdateResult,
-            "Updating severity should return false for a non-existing ID");
-
-        assertEquals(SeverityLevel.SEV1, ticket.getSeverity(),
-            "The existing ticket's severity should remain unchanged");
-    }
-
-    @Test 
-    @DisplayName("allTickets should return independent ticket copies")
-    void allTickets() {
-        Ticket ticket = new Ticket(
-        1,
+    @DisplayName("findAll should return all saved tickets")
+    void findAllReturnsSavedTickets() {
+        Ticket ticket1 = new Ticket(
         "Login page unavailable",
         "Users cannot log in to the application.",
         SeverityLevel.SEV1,
         Instant.parse("2026-10-12T09:00:00Z")
         );
 
-        assertTrue(ticketRepository.addTicket(ticket),"Ticket should be added successfully");
+        Ticket ticket2 = new Ticket(
+                "Profile page loading slowly",
+                "The profile page takes several seconds to load.",
+                SeverityLevel.SEV3,
+                Instant.parse("2026-10-12T10:30:00Z")
+        );
 
-        Map<Integer, Ticket> allTickets = ticketRepository.allTickets();
-        assertNotNull(allTickets, "Returned map should not be null");
+        Ticket ticket3 = new Ticket(
+                "Payment processing failure",
+                "Some users cannot complete their payments.",
+                SeverityLevel.SEV2,
+                Instant.parse("2026-10-12T09:45:00Z")
+        );
 
-        Ticket retrievedTicket = allTickets.get(1);
-        assertNotNull(retrievedTicket, "Returned map should contain the ticket");
+        Ticket ticket1Result = ticketRepository.save(ticket1);
+        Ticket ticket2Result = ticketRepository.save(ticket2);
+        Ticket ticket3Result = ticketRepository.save(ticket3);
 
-        retrievedTicket.setSeverity(SeverityLevel.SEV3);
+        List<Ticket> allTickets = ticketRepository.findAll();
 
-        Ticket storedTicket = ticketRepository.findTicket(1);
+        List<String> returnedIds = allTickets.stream().map(Ticket::getId).toList();
 
-        assertEquals(SeverityLevel.SEV1, storedTicket.getSeverity(), "Modifying a returned ticket should not change the stored ticket");
+        assertEquals(3, allTickets.size());
+
+        assertTrue(returnedIds.contains(ticket1Result.getId()));
+        assertTrue(returnedIds.contains(ticket2Result.getId()));
+        assertTrue(returnedIds.contains(ticket3Result.getId()));
+    }
+
+    @Test
+    void updateTicketPersistsChange() {
+        Ticket ticket = new Ticket(
+                "Login page unavailable",
+                "Users cannot log in to the application.",
+                SeverityLevel.SEV1,
+                Instant.parse("2026-10-12T09:00:00Z")
+        );
+
+        Ticket ticketResult = ticketRepository.save(ticket);
+
+        String ticketID = ticketResult.getId();
+
+        String titleChange = "Login page unavailable!";
+        String descriptionChange = "Users cannot log in to the application!";
+        SeverityLevel severityLevel = SeverityLevel.SEV3;
+        Status status = Status.RESOLVED;
+
+        ticketResult.setTitle(titleChange);
+        ticketResult.setDescription(descriptionChange);
+        ticketResult.setSeverity(severityLevel);
+        ticketResult.setStatus(status);
+
+        ticketRepository.save(ticketResult);
+
+        Optional<Ticket> ticketFromDatabase = ticketRepository.findById(ticketID);
+
+        assertTrue(ticketFromDatabase.isPresent());
+
+        Ticket retrievedTicket = ticketFromDatabase.get();
+
+        assertEquals(titleChange, retrievedTicket.getTitle());
+        assertEquals(descriptionChange, retrievedTicket.getDescription());
+        assertEquals(severityLevel, retrievedTicket.getSeverity());
+        assertEquals(status, retrievedTicket.getStatus());
     }
 }
