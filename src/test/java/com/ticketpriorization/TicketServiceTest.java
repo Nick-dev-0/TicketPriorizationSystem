@@ -151,4 +151,24 @@ public class TicketServiceTest {
         assertEquals(severityLevel, updatedTicket.getSeverity());
         assertEquals(status, updatedTicket.getStatus());
     }
+
+    @Test
+    @DisplayName("Ticket can't be updated if it doesn't exist")
+    void updateTicketNotFound() {
+
+        String ticketId = "missing-id";
+
+        when(ticketRepository.findById(ticketId)).thenReturn(Optional.empty());
+
+        Optional<Ticket> ticketResult = ticketService.updateTicket(
+                "Login page unavailable!",
+                "Users cannot log in to the application!",
+                SeverityLevel.SEV3,
+                ticketId,
+                Status.RESOLVED
+        );
+
+        assertTrue(ticketResult.isEmpty());
+
+    }
 }
