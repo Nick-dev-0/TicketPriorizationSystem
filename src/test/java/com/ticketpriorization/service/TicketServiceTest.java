@@ -1,4 +1,4 @@
-package com.ticketpriorization;
+package com.ticketpriorization.service;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.ticketpriorization.dto.CreateTicketRequest;
+import com.ticketpriorization.model.SeverityLevel;
+import com.ticketpriorization.model.Status;
+import com.ticketpriorization.model.Ticket;
+import com.ticketpriorization.repository.TicketRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

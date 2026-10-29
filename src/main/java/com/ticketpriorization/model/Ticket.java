@@ -1,4 +1,4 @@
-package com.ticketpriorization;
+package com.ticketpriorization.model;
 
 import java.time.Instant;
 import java.util.Objects;

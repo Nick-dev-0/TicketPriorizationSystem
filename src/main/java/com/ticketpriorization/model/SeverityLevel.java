@@ -1,4 +1,4 @@
-package com.ticketpriorization;
+package com.ticketpriorization.model;
 
 public enum SeverityLevel {
     SEV1,

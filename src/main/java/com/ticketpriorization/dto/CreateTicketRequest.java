@@ -1,4 +1,6 @@
-package com.ticketpriorization;
+package com.ticketpriorization.dto;
+import com.ticketpriorization.model.SeverityLevel;
+import com.ticketpriorization.model.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
