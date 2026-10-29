@@ -1,5 +1,10 @@
-package com.ticketpriorization;
+package com.ticketpriorization.service;
 
+import com.ticketpriorization.dto.CreateTicketRequest;
+import com.ticketpriorization.model.SeverityLevel;
+import com.ticketpriorization.model.Status;
+import com.ticketpriorization.model.Ticket;
+import com.ticketpriorization.repository.TicketRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

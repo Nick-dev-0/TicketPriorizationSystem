@@ -1,8 +1,8 @@
 package com.ticketpriorization.controller;
 
-import com.ticketpriorization.CreateTicketRequest;
-import com.ticketpriorization.Ticket;
-import com.ticketpriorization.TicketService;
+import com.ticketpriorization.dto.CreateTicketRequest;
+import com.ticketpriorization.model.Ticket;
+import com.ticketpriorization.service.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
