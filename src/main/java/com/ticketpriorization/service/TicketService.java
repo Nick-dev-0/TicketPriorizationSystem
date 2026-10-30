@@ -12,13 +12,17 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
+import java.time.Duration;
 
 @Service
 public class TicketService {
     private final TicketRepository ticketRepository;
+    private final boolean demoMode;
 
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository, @Value("${app.demo-mode:false}") boolean demoMode) {
         this.ticketRepository = ticketRepository;
+        this.demoMode = demoMode;
     }
     
     public List<Ticket> ticketSeveritySorted() {
@@ -37,8 +41,14 @@ public class TicketService {
 
 
     public Ticket createTicket(CreateTicketRequest ticketRequest) {
-        Ticket builtTicket = new Ticket(ticketRequest.getTitle(), ticketRequest.getDescription(), ticketRequest.getSeverityLevel(), Instant.now());
 
+        Instant createdAt = Instant.now();
+
+        Ticket builtTicket = new Ticket(ticketRequest.getTitle(), ticketRequest.getDescription(), ticketRequest.getSeverityLevel(), createdAt);
+
+        if (demoMode) {
+            builtTicket.setExpiresAt(createdAt.plus(Duration.ofHours(24)));
+        }
         return saveTicket(builtTicket);
     }
 

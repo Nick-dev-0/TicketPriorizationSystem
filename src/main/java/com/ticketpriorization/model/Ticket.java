@@ -14,6 +14,7 @@ public class Ticket {
     private SeverityLevel severity;
     private Instant timestamp;
     private Status status;
+    private Instant expiresAt;
 
     public Ticket(String title, String description, SeverityLevel severity, Instant timestamp) {
 
@@ -33,6 +34,7 @@ public class Ticket {
         this(requireTicket(ticket).getTitle(), requireTicket(ticket).getDescription(), requireTicket(ticket).getSeverity(), requireTicket(ticket).getTimestamp());
         this.status = requireTicket(ticket).getStatus();
         this.id = requireTicket(ticket).getId();
+        this.expiresAt = requireTicket(ticket).getExpiresAt();
     }
 
     public Ticket() {
@@ -100,5 +102,13 @@ public class Ticket {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Instant getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(Instant expiresAt) {
+        this.expiresAt = expiresAt;
     }
 }

@@ -26,7 +26,7 @@ public class TicketServiceTest {
     @BeforeEach
     void setUp() {
         ticketRepository = mock(TicketRepository.class);
-        ticketService = new TicketService(ticketRepository);
+        ticketService = new TicketService(ticketRepository, false);
     }
 
     @Test
@@ -103,6 +103,7 @@ public class TicketServiceTest {
         assertEquals("Users cannot log in to the application.", ticket.getDescription());
         assertEquals(SeverityLevel.SEV1, ticket.getSeverity());
 
+        assertNull(ticket.getExpiresAt());
         }
 
     @Test
