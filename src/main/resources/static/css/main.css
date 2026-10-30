@@ -1,3 +1,41 @@
+body {
+    min-height: 100vh;
+    background:
+            radial-gradient(
+                    ellipse at center,
+                    transparent 70%,
+                    rgba(25, 38, 60, 0.12) 100%
+            ),
+            #f4f6fa;
+}
+
+.ticket-table thead th {
+    background-color: #edf1f5;
+    color: #445064;
+    font-weight: 600;
+    border-bottom: 1px solid #dce2ea;
+}
+
+.ticket-table th,
+.ticket-table td {
+    padding: 0.85rem 0.9rem;
+    vertical-align: middle;
+    border-top: 1px solid #edf0f4;
+}
+
+.ticket-table.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #ffffff;
+}
+
+.ticket-table.table-striped tbody tr:nth-of-type(even) {
+    background-color: #f8fafc;
+}
+
+.ticket-table.table-hover tbody tr:hover {
+    background-color: #edf2f7;
+}
+
+
 .severity-sev1 {
     background-color: #f2B8B5;
     color: #642D32;
