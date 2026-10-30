@@ -88,7 +88,6 @@ function createTicketRow(ticket) {
 }
 
 function updateTicketView() {
-    console.log("updateTicketView called");
 
     const ticketHeadingText = document.getElementById("ticketHeadingText");
 
