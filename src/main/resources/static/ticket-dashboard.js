@@ -15,6 +15,8 @@ const statusClasses = {
 
 let allTickets = [];
 
+let suggestedSeverity = null;
+
 async function buildTable() {
     const ticketAPI = "/api/tickets";
     const response = await fetch(ticketAPI);
@@ -207,6 +209,57 @@ function updateTicketView() {
         }
     }
 
+async function handleAISuggestionClick() {
+
+    const title = document.getElementById("title").value.trim();
+    const description = document.getElementById("description").value.trim();
+
+    if (!title || !description) {
+        alert("Please enter a ticket title and description first.");
+        return;
+    }
+
+    const suggestSeverityButton = document.getElementById("suggestSeverityBtn");
+
+    suggestSeverityButton.textContent = "Analyzing...";
+    suggestSeverityButton.disabled = true;
+
+    try {
+        const response = await fetch('/api/severity-suggestions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                description: description
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to get severity suggestion.");
+        }
+
+        const suggestion = await response.json();
+
+        suggestedSeverity = suggestion.suggestedSeverity;
+
+        document.getElementById("suggestedSeverity").textContent = suggestion.suggestedSeverity;
+        document.getElementById("severityReasoning").textContent = suggestion.reasoning;
+
+        document.getElementById("severitySuggestion").classList.remove("d-none");
+
+    } catch (error) {
+        console.error("Error getting AI suggestion:", error);
+        alert("Unable to get an AI severity suggestion. Please try again.");
+
+    } finally {
+        suggestSeverityButton.textContent = "AI Suggestion";
+        suggestSeverityButton.disabled = false;
+    }
+}
+
+
     buildTable();
 
     const form = document.getElementById("create-ticket-form");
@@ -215,7 +268,16 @@ function updateTicketView() {
     const editForm = document.getElementById("edit-ticket-form");
     editForm.addEventListener("submit", handleEditTicketSubmit);
 
-
     document.getElementById("openTicketFilter").addEventListener("change", updateTicketView);
     document.getElementById("resolvedTicketFilter").addEventListener("change", updateTicketView);
 
+
+    const suggestSeverityButton = document.getElementById("suggestSeverityBtn");
+    suggestSeverityButton.addEventListener("click", handleAISuggestionClick);
+
+    const applySuggestionBtn = document.getElementById("applySuggestionBtn");
+    const severityDropdown = document.getElementById("severity");
+
+    applySuggestionBtn.addEventListener("click", () => {
+        severityDropdown.value = suggestedSeverity;
+    });
