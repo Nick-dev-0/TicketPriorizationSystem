@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import type { SubmitEvent } from "react";
-import {createTicket, getSeveritySuggestion} from "../services/ticketService.ts";
+import { createTicket, getSeveritySuggestion } from "../services/ticketService";
 import type { SeveritySuggestionResponse } from "../models/severity-suggestion";
 import type { Ticket, SeverityLevel } from "../models/ticket";
 
@@ -8,102 +9,19 @@ type TicketFormProps = {
     onTicketCreated: (ticket: Ticket) => void;
 };
 
-
 function TicketForm({ onTicketCreated }: TicketFormProps) {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [suggestion, setSuggestion] = useState<SeveritySuggestionResponse | null>(null);
-    const [severity, setSeverity] = useState<SeverityLevel>("SEV1");
-
+    const [severity, setSeverity] = useState<SeverityLevel>("SEV4");
     const [isSuggesting, setIsSuggesting] = useState(false);
-
-    return (
-        <section>
-            <h2>Create Ticket</h2>
-
-            <form id="create-ticket-form" onSubmit={handleFormSubmit}>
-
-                <div>
-                    <label htmlFor="title">Title</label>
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(event) => setTitle(event.target.value)}
-                        id="title"
-                        name="title"
-                        placeholder="Write the ticket title..."
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="description">Description</label>
-                    <textarea
-                        id="description"
-                        value={description}
-                        onChange={(event) => setDescription(event.target.value)}
-                        name="description"
-                        rows={3}
-                        placeholder="Write the ticket description..."
-                        required
-                    />
-                </div>
-
-                <div>
-                    <div>
-                        <label htmlFor="severity">Severity</label>
-
-                        <button type="button" onClick={handleSuggestion} disabled={isSuggesting}>
-                            {isSuggesting ? "Awaiting..." : "AI Suggestion"}
-                        </button>
-                    </div>
-
-                    <select
-                        id="severity"
-                        name="severity"
-                        value={severity}
-                        onChange={(event) => setSeverity(event.target.value as SeverityLevel)}
-                        required
-                    >
-                        <option value="SEV1">SEV1</option>
-                        <option value="SEV2">SEV2</option>
-                        <option value="SEV3">SEV3</option>
-                        <option value="SEV4">SEV4</option>
-                    </select>
-
-                    {suggestion && (
-                        <div>
-                            <h4>
-                                AI Recommended Severity:
-                                <span>{suggestion.suggestedSeverity}</span>
-                            </h4>
-
-                            <p>{suggestion.reasoning}</p>
-
-                            <button type="button">
-                                Use Recommendation
-                            </button>
-                        </div>
-                    )}
-                </div>
-
-                <button type="submit">
-                    Create Ticket
-                </button>
-
-            </form>
-        </section>
-    );
 
     async function handleSuggestion() {
         setIsSuggesting(true);
 
         try {
-            const suggestion = await getSeveritySuggestion({
-                title,
-                description
-            });
+            const suggestion = await getSeveritySuggestion({title, description});
 
             setSuggestion(suggestion);
         } finally {
@@ -114,14 +32,89 @@ function TicketForm({ onTicketCreated }: TicketFormProps) {
     async function handleFormSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        const newTicket = await createTicket({
-            title,
-            description,
-            severity
-        });
+        const newTicket = await createTicket({title, description, severity});
 
         onTicketCreated(newTicket);
     }
+
+    function handleApplySuggestion() {
+        if (suggestion) {
+            setSeverity(suggestion.suggestedSeverity);
+        }
+    }
+
+    return (
+        <section className="card mb-4">
+            <div className="card-body">
+                <h2 className="card-title mb-4">Create Ticket</h2>
+
+                <form id="create-ticket-form" onSubmit={handleFormSubmit}>
+
+                    <div className="mb-3">
+                        <label htmlFor="title" className="form-label">Title</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={title}
+                            onChange={(event) => setTitle(event.target.value)}
+                            id="title"
+                            name="title"
+                            placeholder="Write the ticket title..."
+                            required
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label htmlFor="description" className="form-label">Description</label>
+                        <textarea
+                            className="form-control"
+                            id="description"
+                            value={description}
+                            onChange={(event) => setDescription(event.target.value)}
+                            name="description"
+                            rows={3}
+                            placeholder="Write the ticket description..."
+                            required
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <label htmlFor="severity" className="form-label mb-0">Severity</label>
+                            <button type="button" className="btn btn-outline-primary btn-sm" onClick={handleSuggestion} disabled={isSuggesting}>
+                                {isSuggesting ? "Awaiting..." : "AI Suggestion"}
+                            </button>
+                        </div>
+
+                        <select
+                            id="severity"
+                            name="severity"
+                            className="form-select"
+                            value={severity}
+                            onChange={(event) => setSeverity(event.target.value as SeverityLevel)}
+                            required
+                        >
+                            <option value="SEV1">SEV1</option>
+                            <option value="SEV2">SEV2</option>
+                            <option value="SEV3">SEV3</option>
+                            <option value="SEV4">SEV4</option>
+                        </select>
+
+                        {suggestion && (
+                            <div className="alert alert-info mt-3">
+                                <h5>AI Recommended Severity: {suggestion.suggestedSeverity}</h5>
+                                <p>{suggestion.reasoning}</p>
+                                <button type="button" className="btn btn-primary btn-sm" onClick={handleApplySuggestion}>Use Recommendation</button>
+                            </div>
+                        )}
+                    </div>
+
+                    <button type="submit" className="btn btn-primary">Create Ticket</button>
+
+                </form>
+            </div>
+        </section>
+    );
 }
 
 export default TicketForm;

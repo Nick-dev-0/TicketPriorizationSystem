@@ -18,3 +18,10 @@ export interface CreateTicketRequest {
     severity: SeverityLevel;
     status?: TicketStatus;
 }
+
+export interface UpdateTicketRequest {
+    title: string;
+    description: string;
+    severity: SeverityLevel;
+    status: TicketStatus;
+}

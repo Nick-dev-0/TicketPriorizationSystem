@@ -21,13 +21,21 @@ function App() {
         setTickets(currentTickets => [...currentTickets, newTicket]);
     }
 
+    function handleTicketUpdated(updatedTicket: Ticket) {
+        setTickets(currentTickets =>
+            currentTickets.map(ticket =>
+                ticket.id === updatedTicket.id ? updatedTicket : ticket
+            )
+        );
+    }
+
     return (
-        <main>
-            <h1>Ticket Prioritization System</h1>
+        <main className="container py-4">
+            <h1 className="mb-4">Ticket Prioritization System</h1>
 
             <TicketForm onTicketCreated={handleTicketCreated} />
 
-            <TicketList tickets={tickets} />
+            <TicketList tickets={tickets} onTicketUpdated={handleTicketUpdated} />
         </main>
     );
 }

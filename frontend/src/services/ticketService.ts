@@ -1,5 +1,5 @@
-import type { Ticket, CreateTicketRequest } from "../models/ticket";
 import type { SeveritySuggestionRequest, SeveritySuggestionResponse } from "../models/severity-suggestion";
+import type {Ticket, CreateTicketRequest, UpdateTicketRequest} from "../models/ticket";
 
 export async function getTickets(): Promise<Ticket[]> {
 
@@ -44,4 +44,21 @@ export async function getSeveritySuggestion(request: SeveritySuggestionRequest):
     }
 
     return (await response.json()) as SeveritySuggestionResponse;
+}
+
+export async function updateTicket(id: string, ticketData: UpdateTicketRequest): Promise<Ticket> {
+
+    const response = await fetch(`/api/tickets/${id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(ticketData)
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to update ticket.");
+    }
+
+    return (await response.json()) as Ticket;
 }
