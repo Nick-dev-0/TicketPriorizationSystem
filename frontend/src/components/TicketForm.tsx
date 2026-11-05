@@ -17,6 +17,9 @@ function TicketForm({ onTicketCreated }: TicketFormProps) {
     const [severity, setSeverity] = useState<SeverityLevel>("SEV4");
     const [isSuggesting, setIsSuggesting] = useState(false);
 
+    const [submissionError, setSubmissionError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     async function handleSuggestion() {
         setIsSuggesting(true);
 
@@ -32,9 +35,24 @@ function TicketForm({ onTicketCreated }: TicketFormProps) {
     async function handleFormSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        const newTicket = await createTicket({title, description, severity});
+        setSubmissionError(null);
+        setIsSubmitting(true);
 
-        onTicketCreated(newTicket);
+        try {
+            const newTicket = await createTicket({title, description, severity});
+
+            onTicketCreated(newTicket);
+
+            setTitle("");
+            setDescription("");
+            setSeverity("SEV4");
+            setSuggestion(null);
+
+        } catch (error) {
+            setSubmissionError(error instanceof Error ? error.message : "Failed to create ticket.");
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     function handleApplySuggestion() {
@@ -108,9 +126,10 @@ function TicketForm({ onTicketCreated }: TicketFormProps) {
                             </div>
                         )}
                     </div>
-
-                    <button type="submit" className="btn btn-primary">Create Ticket</button>
-
+                    {submissionError && (
+                        <div className="alert alert-danger" role="alert">{submissionError}</div>
+                    )}
+                    <button type="submit" className="btn btn-primary" disabled={isSubmitting}>{isSubmitting ? "Creating..." : "Create Ticket"}</button>
                 </form>
             </div>
         </section>
