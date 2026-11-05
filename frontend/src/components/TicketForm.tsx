@@ -1,19 +1,28 @@
 import { useState } from "react";
-import {getSeveritySuggestion} from "../services/ticketService.ts";
+import type { SubmitEvent } from "react";
+import {createTicket, getSeveritySuggestion} from "../services/ticketService.ts";
 import type { SeveritySuggestionResponse } from "../models/severity-suggestion";
+import type { Ticket, SeverityLevel } from "../models/ticket";
 
-function TicketForm() {
+type TicketFormProps = {
+    onTicketCreated: (ticket: Ticket) => void;
+};
+
+
+function TicketForm({ onTicketCreated }: TicketFormProps) {
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [suggestion, setSuggestion] = useState<SeveritySuggestionResponse | null>(null);
+    const [severity, setSeverity] = useState<SeverityLevel>("SEV1");
+
     const [isSuggesting, setIsSuggesting] = useState(false);
 
     return (
         <section>
             <h2>Create Ticket</h2>
 
-            <form id="create-ticket-form">
+            <form id="create-ticket-form" onSubmit={handleFormSubmit}>
 
                 <div>
                     <label htmlFor="title">Title</label>
@@ -53,6 +62,8 @@ function TicketForm() {
                     <select
                         id="severity"
                         name="severity"
+                        value={severity}
+                        onChange={(event) => setSeverity(event.target.value as SeverityLevel)}
                         required
                     >
                         <option value="SEV1">SEV1</option>
@@ -99,5 +110,18 @@ function TicketForm() {
             setIsSuggesting(false);
         }
     }
+
+    async function handleFormSubmit(event: SubmitEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        const newTicket = await createTicket({
+            title,
+            description,
+            severity
+        });
+
+        onTicketCreated(newTicket);
+    }
 }
+
 export default TicketForm;
