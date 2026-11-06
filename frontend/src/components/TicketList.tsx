@@ -12,9 +12,10 @@ const severityRank: Record<SeverityLevel, number> = {
 type TicketListProps = {
     tickets: Ticket[];
     onTicketUpdated: (updatedTicket: Ticket) => void;
+    onTicketDeleted: (deletedTicketId: string) => void;
 };
 
-function TicketList({ tickets, onTicketUpdated }: TicketListProps) {
+function TicketList({ tickets, onTicketUpdated, onTicketDeleted }: TicketListProps) {
 
     const [ticketToEdit, setTicketToEdit] = useState<Ticket | null>(null);
     const [severitySortOrder, setSeveritySortOrder] = useState<"highest" | "lowest">("highest");
@@ -127,9 +128,17 @@ function TicketList({ tickets, onTicketUpdated }: TicketListProps) {
                                 <tr key={ticket.id}>
                                     <td>{ticket.title}</td>
                                     <td>{ticket.description}</td>
-                                    <td>{ticket.severity}</td>
+                                    <td>
+                                        <span className={`badge severity-${ticket.severity.toLowerCase()}`}>
+                                            {ticket.severity}
+                                        </span>
+                                    </td>
                                     <td>{new Date(ticket.timestamp).toLocaleString()}</td>
-                                    <td>{ticket.status}</td>
+                                    <td>
+                                        <span className={`badge status-${ticket.status.toLowerCase()}`}>
+                                            {ticket.status}
+                                        </span>
+                                    </td>
                                     <td>
                                         <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => setTicketToEdit(ticket)}>Edit</button>
                                     </td>
@@ -146,7 +155,7 @@ function TicketList({ tickets, onTicketUpdated }: TicketListProps) {
                         ticket={ticketToEdit}
                         onClose={() => setTicketToEdit(null)}
                         onTicketUpdated={onTicketUpdated}
-                    />
+                        onTicketDeleted={onTicketDeleted}/>
                 )}
             </div>
         </section>

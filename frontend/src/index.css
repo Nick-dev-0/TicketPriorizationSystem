@@ -109,3 +109,34 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+
+.severity-sev1 {
+  background-color: #f2B8B5;
+  color: #642D32;
+}
+
+.severity-sev2 {
+  background-color: #f2C49B;
+  color: #663B1C;
+}
+
+.severity-sev3 {
+  background-color: #e9D99A;
+  color: #554719;
+}
+
+.severity-sev4 {
+  background-color: #b5D6B8;
+  color: #254D35;
+}
+
+.status-open {
+  background-color: #dCE8F5;
+  color: #24476B;
+}
+
+.status-resolved {
+  background-color: #e0E6E2;
+  color: #34493B;
+}
