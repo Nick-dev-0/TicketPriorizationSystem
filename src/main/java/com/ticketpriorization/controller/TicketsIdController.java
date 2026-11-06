@@ -36,4 +36,15 @@ public class TicketsIdController {
         return ResponseEntity.ok(updatedTicket.get());
 
     }
+
+    @DeleteMapping("/api/tickets/{id}")
+    public ResponseEntity<Void> deleteTicket(@PathVariable("id") String id) {
+        boolean deleted = ticketService.deleteTicket(id);
+
+        if (!deleted) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
+    }
 }
