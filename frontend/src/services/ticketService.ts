@@ -1,9 +1,11 @@
 import type { SeveritySuggestionRequest, SeveritySuggestionResponse } from "../models/severity-suggestion";
 import type {Ticket, CreateTicketRequest, UpdateTicketRequest} from "../models/ticket";
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+
 export async function getTickets(): Promise<Ticket[]> {
 
-    const response = await fetch("/api/tickets");
+    const response = await fetch(`${API_BASE_URL}/api/tickets`);
 
     if (!response.ok) {
         throw new Error("Failed to retrieve tickets");
@@ -14,7 +16,7 @@ export async function getTickets(): Promise<Ticket[]> {
 
 export async function createTicket(ticketData: CreateTicketRequest): Promise<Ticket> {
 
-    const response = await fetch("/api/tickets", {
+    const response = await fetch(`${API_BASE_URL}/api/tickets`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -31,7 +33,7 @@ export async function createTicket(ticketData: CreateTicketRequest): Promise<Tic
 
 export async function getSeveritySuggestion(request: SeveritySuggestionRequest): Promise<SeveritySuggestionResponse> {
 
-    const response = await fetch("/api/severity-suggestions", {
+    const response = await fetch(`${API_BASE_URL}/api/severity-suggestions`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -48,7 +50,7 @@ export async function getSeveritySuggestion(request: SeveritySuggestionRequest):
 
 export async function updateTicket(id: string, ticketData: UpdateTicketRequest): Promise<Ticket> {
 
-    const response = await fetch(`/api/tickets/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/tickets/${id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json"
@@ -65,7 +67,7 @@ export async function updateTicket(id: string, ticketData: UpdateTicketRequest):
 
 export async function deleteTicket(id: string): Promise<void> {
 
-    const response = await fetch(`/api/tickets/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/tickets/${id}`, {
         method: "DELETE"
     });
 
