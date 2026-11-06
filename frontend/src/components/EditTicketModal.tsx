@@ -1,21 +1,25 @@
 
 import { useState } from "react";
 import type { SubmitEvent } from "react";
-import { updateTicket } from "../services/ticketService";
+import { deleteTicket, updateTicket } from "../services/ticketService";
 import type { Ticket, SeverityLevel, TicketStatus } from "../models/ticket";
 
 type EditTicketModalProps = {
     ticket: Ticket;
     onClose: () => void;
     onTicketUpdated: (updatedTicket: Ticket) => void;
+    onTicketDeleted: (deletedTicketId: string) => void;
 };
 
-function EditTicketModal({ ticket, onClose, onTicketUpdated }: EditTicketModalProps) {
+function EditTicketModal({ ticket, onClose, onTicketUpdated, onTicketDeleted }: EditTicketModalProps) {
 
     const [title, setTitle] = useState(ticket.title);
     const [description, setDescription] = useState(ticket.description);
     const [severity, setSeverity] = useState<SeverityLevel>(ticket.severity);
     const [status, setStatus] = useState<TicketStatus>(ticket.status);
+
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -24,6 +28,29 @@ function EditTicketModal({ ticket, onClose, onTicketUpdated }: EditTicketModalPr
 
         onTicketUpdated(updatedTicket);
         onClose();
+    }
+
+    async function handleDelete() {
+        const confirmed = window.confirm(`Are you sure you want to delete "${ticket.title}"?`);
+
+        if (!confirmed) {
+            return;
+        }
+
+        setIsDeleting(true);
+        setDeleteError(null);
+
+        try {
+            await deleteTicket(ticket.id);
+
+            onTicketDeleted(ticket.id);
+            onClose();
+
+        } catch (error) {
+            setDeleteError(error instanceof Error ? error.message : "Failed to delete ticket.");
+        } finally {
+            setIsDeleting(false);
+        }
     }
 
     return (
@@ -97,13 +124,19 @@ function EditTicketModal({ ticket, onClose, onTicketUpdated }: EditTicketModalPr
                                         <option value="RESOLVED">RESOLVED</option>
                                     </select>
                                 </div>
-
+                                {deleteError && (<div className="alert alert-danger" role="alert">{deleteError}</div>)}
                             </div>
 
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={onClose}>Cancel</button>
-                                <button type="submit" className="btn btn-primary">Save Changes</button>
+                                {ticket.expiresAt != null && (
+                                    <button type="button" className="btn btn-danger me-auto" onClick={handleDelete} disabled={isDeleting}>
+                                        {isDeleting ? "Deleting..." : "Delete Ticket"}
+                                    </button>
+                                )}
+                                <button type="button" className="btn btn-secondary" onClick={onClose} disabled={isDeleting}>Cancel</button>
+                                <button type="submit" className="btn btn-primary" disabled={isDeleting}>Save Changes</button>
                             </div>
+
                         </form>
 
                     </div>

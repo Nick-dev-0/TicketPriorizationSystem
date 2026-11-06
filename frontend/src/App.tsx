@@ -29,13 +29,19 @@ function App() {
         );
     }
 
+    function handleTicketDeleted(deletedTicketId: string) {
+        setTickets(currentTickets =>
+            currentTickets.filter(ticket => ticket.id !== deletedTicketId)
+        );
+    }
+
     return (
         <main className="container py-4">
-            <h1 className="mb-4">Ticket Prioritization System</h1>
+            <h1 className="mb-4 text-dark">Ticket Prioritization System</h1>
 
             <TicketForm onTicketCreated={handleTicketCreated} />
 
-            <TicketList tickets={tickets} onTicketUpdated={handleTicketUpdated} />
+            <TicketList tickets={tickets} onTicketUpdated={handleTicketUpdated} onTicketDeleted={handleTicketDeleted}/>
         </main>
     );
 }
