@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import type { Ticket, SeverityLevel } from "../models/ticket";
 import EditTicketModal from "./EditTicketModal";
@@ -42,22 +43,31 @@ function TicketList({ tickets, onTicketUpdated, onTicketDeleted }: TicketListPro
         return secondSeverityRank - firstSeverityRank;
     });
 
+    function handleSeveritySort() {
+        setSeveritySortOrder(currentOrder => currentOrder === "highest" ? "lowest" : "highest");
+    }
 
     return (
-        <section className="card">
-            <div className="card-body">
-                <h2 className="card-title mb-4">
-                    {showOpenTickets && showResolvedTickets
-                        ? "All Tickets"
-                        : showOpenTickets
-                            ? "Open Tickets"
-                            : showResolvedTickets
-                                ? "Resolved Tickets"
-                                : "No Tickets Selected"}
-                </h2>
+        <section className="dashboard-panel">
+            <div className="panel-body">
+                <div className="panel-heading">
+                    <div>
+                        <h2 className="panel-title">
+                            {showOpenTickets && showResolvedTickets
+                                ? "All Tickets"
+                                : showOpenTickets
+                                    ? "Open Tickets"
+                                    : showResolvedTickets
+                                        ? "Resolved Tickets"
+                                        : "No Tickets Selected"}
+                        </h2>
+                    </div>
 
-                <div className="card mb-3">
-                    <div className="card-body p-0">
+                    <span className="queue-total">{tickets.length} total</span>
+                </div>
+
+                <div className="ticket-filters mb-3">
+                    <div className="ticket-filters-body">
                         <div className="row g-0">
 
                             <div className="col-6 text-center border-end py-3">
@@ -99,13 +109,16 @@ function TicketList({ tickets, onTicketUpdated, onTicketDeleted }: TicketListPro
                 </div>
 
                 <div className="table-responsive">
-                    <table className="table table-striped table-hover align-middle">
-                        <thead className="table-light">
+                    <table className="table table-hover align-middle ticket-table">
+                        <thead>
                         <tr>
                             <th>Title</th>
                             <th>Description</th>
                             <th>
-                                <button type="button" className="btn btn-sm btn-outline-secondary py-0 px-2" onClick={handleSeveritySort}>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-secondary py-0 px-2"
+                                    onClick={handleSeveritySort}>
                                     <span className="fw-bold">Severity</span>
                                     <span className="ms-1">{severitySortOrder === "highest" ? "↓" : "↑"}</span>
                                 </button>
@@ -140,7 +153,12 @@ function TicketList({ tickets, onTicketUpdated, onTicketDeleted }: TicketListPro
                                         </span>
                                     </td>
                                     <td>
-                                        <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => setTicketToEdit(ticket)}>Edit</button>
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-primary btn-sm"
+                                            onClick={() => setTicketToEdit(ticket)}>
+                                            Edit
+                                        </button>
                                     </td>
                                 </tr>
                             ))
@@ -160,11 +178,6 @@ function TicketList({ tickets, onTicketUpdated, onTicketDeleted }: TicketListPro
             </div>
         </section>
     );
-
-
-    function handleSeveritySort() {
-        setSeveritySortOrder(currentOrder => currentOrder === "highest" ? "lowest" : "highest");
-    }
 }
 
 export default TicketList;

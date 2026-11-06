@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import type { Ticket } from "./models/ticket";
 import { getTickets } from "./services/ticketService";
@@ -36,12 +37,27 @@ function App() {
     }
 
     return (
-        <main className="container py-4">
-            <h1 className="mb-4 text-dark">Ticket Prioritization System</h1>
+        <main className="app-shell">
+            <div className="container app-container py-5">
+                <header className="app-header">
+                    <div>
+                        <h1 className="app-title">Ticket Prioritization</h1>
+                    </div>
 
-            <TicketForm onTicketCreated={handleTicketCreated} />
+                    <div className="environment-badge" aria-label="Demo environment">
+                        <span className="environment-badge-dot" aria-hidden="true"></span>
+                        DEMO ENVIRONMENT
+                    </div>
+                </header>
 
-            <TicketList tickets={tickets} onTicketUpdated={handleTicketUpdated} onTicketDeleted={handleTicketDeleted}/>
+                <TicketForm onTicketCreated={handleTicketCreated} />
+
+                <TicketList
+                    tickets={tickets}
+                    onTicketUpdated={handleTicketUpdated}
+                    onTicketDeleted={handleTicketDeleted}
+                />
+            </div>
         </main>
     );
 }
