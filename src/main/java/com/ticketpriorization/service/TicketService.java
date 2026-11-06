@@ -74,4 +74,21 @@ public class TicketService {
         return Optional.empty();
 
     }
+
+    public boolean deleteTicket(String id) {
+        Optional<Ticket> ticketOptional = ticketRepository.findById(id);
+
+        if (ticketOptional.isEmpty()) {
+            return false;
+        }
+
+        Ticket ticket = ticketOptional.get();
+
+        if (ticket.getExpiresAt() == null) {
+            return false;
+        }
+
+        ticketRepository.delete(ticket);
+        return true;
+    }
 }
