@@ -288,3 +288,51 @@ body {
     margin-bottom: 18px;
   }
 }
+
+.system-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 7px 11px;
+  border: 1px solid;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.system-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.system-status-connecting {
+  border-color: #EAD9A7;
+  background-color: #FBF6E8;
+  color: #725A20;
+}
+
+.system-status-connecting .system-status-dot {
+  background-color: #C58A25;
+}
+
+.system-status-online {
+  border-color: #C7E5D6;
+  background-color: #E7F4EC;
+  color: #17633C;
+}
+
+.system-status-online .system-status-dot {
+  background-color: #16804A;
+}
+
+.system-status-unavailable {
+  border-color: #E9C9C9;
+  background-color: #FBECEC;
+  color: #9C3535;
+}
+
+.system-status-unavailable .system-status-dot {
+  background-color: #C24141;
+}

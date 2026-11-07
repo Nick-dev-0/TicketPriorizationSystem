@@ -1,7 +1,7 @@
 import type { SeveritySuggestionRequest, SeveritySuggestionResponse } from "../models/severity-suggestion";
 import type {Ticket, CreateTicketRequest, UpdateTicketRequest} from "../models/ticket";
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+import { API_BASE_URL } from "./apiConfig";
 
 export async function getTickets(): Promise<Ticket[]> {
 
