@@ -336,3 +336,19 @@ body {
 .system-status-unavailable .system-status-dot {
   background-color: #C24141;
 }
+
+.system-status-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  max-width: 260px;
+}
+
+.system-status-message {
+  margin: 0;
+  color: #788392;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-align: right;
+}

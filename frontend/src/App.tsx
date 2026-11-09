@@ -114,10 +114,19 @@ function App() {
                         <p className="app-subtitle">Prioritize, track, and resolve support tickets.</p>
                     </div>
 
-                    <div className={`system-status system-status-${systemStatus}`} role="status">
-                        <span className="system-status-dot" aria-hidden="true"></span>
-                        {statusLabels[systemStatus]}
+                    <div className="system-status-container">
+                        <div className={`system-status system-status-${systemStatus}`} role="status">
+                            <span className="system-status-dot" aria-hidden="true"></span>
+                            {statusLabels[systemStatus]}
+                        </div>
+
+                        {systemStatus === "connecting" && (
+                            <p className="system-status-message">
+                                The demo backend may take up to 2 minutes to wake after inactivity.
+                            </p>
+                        )}
                     </div>
+
                 </header>
 
                 <TicketForm onTicketCreated={handleTicketCreated} />
