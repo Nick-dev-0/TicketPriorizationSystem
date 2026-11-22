@@ -1,175 +1,207 @@
 # Ticket Prioritization System
 
-A support ticket tracker built with Java and Spring Boot. It has a REST API, a browser dashboard for creating and editing tickets, and an AI suggestion that recommends a severity level for a new ticket. I built it to get more practice with Spring Boot, working with a database, and connecting a plain JavaScript frontend to backend endpoints.
+A full stack support ticket application built with Java, Spring Boot, React, and TypeScript. The application provides a REST API and a browser dashboard for creating, updating, prioritizing, and tracking support tickets.
 
-**Live demo:** [ticketpriorizationsystem.onrender.com](https://ticketpriorizationsystem.onrender.com/ticket-dashboard.html)
+The dashboard supports ticket management and status filtering. Users can also request an AI assisted severity suggestion based on a ticket's title and description, review the recommendation, and choose whether to apply it.
 
-The demo can take about a minute to start if nobody has used it recently. It is also public, so everyone sees the same tickets, and new tickets are deleted after 24 hours. Please don't enter anything private.
+## Features
 
-## What it does
+### Ticket management
 
-- Create tickets with a title, description, and severity from `SEV1` (most severe) to `SEV4`.
-- List tickets sorted by severity, then by creation time with the oldest first.
-- Edit a ticket's title, description, severity, and status (`OPEN` or `RESOLVED`) from the dashboard.
-- Filter the dashboard by open and resolved tickets, with a count for each.
-- Reject invalid requests with a `400` response, for example a blank title or a missing severity.
-- Store tickets in MongoDB.
-- Suggest a severity from a ticket's title and description using the OpenAI API.
+1. Create tickets with a title, description, and severity.
+2. View all tickets or retrieve an individual ticket by ID.
+3. Edit ticket details and change ticket status.
+4. Delete tickets from the dashboard or REST API.
+5. Store ticket records in MongoDB.
 
-## AI severity suggestion
+### Severity and status
 
-The **AI Suggestion** button on the create form sends the title and description to `POST /api/severity-suggestions`. The dashboard shows the recommended severity with a short explanation, and **Use Recommendation** copies it into the severity dropdown. Nothing is saved until the ticket is submitted, so the final choice is the user's. The model can get a severity wrong, which is why it only suggests.
+Tickets use four severity levels: `SEV1`, `SEV2`, `SEV3`, and `SEV4`. New tickets start with an `OPEN` status. Tickets can be changed to `RESOLVED`.
 
-How it works:
+The backend orders tickets by severity and creation time. The dashboard can sort by severity and filter between open and resolved tickets. Severity and status are displayed with badges in the interface.
 
-- `SeveritySuggestionService` calls the OpenAI Responses API through the OpenAI Java SDK.
-- The prompt defines each severity level and includes five example tickets.
-- The reply is requested as structured output and parsed straight into a Java object with a `suggestedSeverity` and a `reasoning` field.
-- The ticket text is passed to the model as data, and the prompt tells it not to follow instructions that appear inside a ticket.
+### AI severity suggestions
 
-## Built with
+The application includes an endpoint that uses the OpenAI Java SDK to request a severity recommendation from the ticket title and description. The response includes a suggested severity and a short explanation.
 
-- Java 25
-- Spring Boot 4.1.2 (Spring MVC, Spring Data MongoDB, Jakarta Bean Validation)
-- MongoDB, using MongoDB Atlas for the live demo
-- OpenAI Java SDK 4.94.0
-- HTML, CSS, JavaScript, and Bootstrap 4
-- Maven
-- JUnit 5, Mockito, and MockMvc
-- Docker and Render
+The suggestion is user initiated. It does not automatically change a ticket's severity. The user can review the recommendation and choose to apply it in the form.
 
-## Run it locally
+### Backend status and validation
 
-You will need JDK 25, Maven, a MongoDB database (a free MongoDB Atlas cluster works), and an OpenAI API key.
+The dashboard checks the backend health endpoint and displays whether the backend is connecting, online, or unavailable. It retries while the backend is starting.
 
-Clone the repository:
+The API uses request validation for supported input fields and returns errors for invalid requests or tickets that cannot be found.
 
-```bash
-git clone https://github.com/Nick-dev-0/TicketPriorizationSystem.git
-cd TicketPriorizationSystem
+## Technology
+
+### Backend
+
+1. Java 25
+2. Spring Boot 4.1.2 and Spring MVC
+3. Spring Data MongoDB
+4. Jakarta Bean Validation
+5. OpenAI Java SDK
+6. Maven
+7. JUnit and Spring Boot Test
+
+### Frontend
+
+1. React 19
+2. TypeScript
+3. Vite
+4. Bootstrap 5
+5. CSS
+
+### Containerization
+
+The repository includes a Dockerfile that builds and packages the Spring Boot backend into a Java runtime image.
+
+## Application structure
+
+The frontend is located in the `frontend` directory. It contains the React application, ticket components, TypeScript models, and API service functions.
+
+The backend is a Spring Boot application. Its controllers expose the REST endpoints, service classes handle application logic, and the ticket repository uses Spring Data MongoDB to access ticket records.
+
+The main request flow is:
+
+```text
+Browser dashboard
+       |
+       v
+React and TypeScript frontend
+       |
+       v
+Spring Boot REST API
+       |
+       v
+Ticket service and MongoDB repository
+       |
+       v
+MongoDB
 ```
 
-Create a `.env` file in the project root:
-
-```properties
-MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/?retryWrites=true&w=majority
-OPENAI_API_KEY=your_openai_api_key
-```
-
-`MONGODB_URI` and `OPENAI_API_KEY` have no defaults, so both need to be set for the app to start. You can also set them as normal environment variables instead of using a `.env` file. Keep your `.env` private. It is already listed in `.gitignore`.
-
-These settings are optional:
-
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `MONGODB_DATABASE` | `ticket_system` | Name of the MongoDB database. |
-| `OPENAI_MODEL` | Set in `application.properties` | Model used for severity suggestions. |
-| `APP_DEMO_MODE` | `false` | Gives new tickets an expiry time. See [Demo mode](#demo-mode). |
-| `PORT` | `8080` | Port the app listens on. |
-
-Start the app:
-
-```bash
-mvn spring-boot:run
-```
-
-Then open [http://localhost:8080](http://localhost:8080), which redirects to the dashboard.
+Severity suggestions use a separate backend service that sends the ticket information to the OpenAI API and returns the structured recommendation to the frontend.
 
 ## API
 
-| Method | Endpoint | Purpose | Main responses |
-| --- | --- | --- | --- |
-| `GET` | `/api/tickets` | List tickets by severity, then creation time. | `200` |
-| `GET` | `/api/tickets/{id}` | Get one ticket. | `200`, `404` |
-| `POST` | `/api/tickets` | Create a ticket. | `201`, `400` |
-| `PATCH` | `/api/tickets/{id}` | Update a ticket. | `200`, `400`, `404` |
-| `POST` | `/api/severity-suggestions` | Get a suggested severity without creating a ticket. | `200`, `400` |
+### Ticket endpoints
+
+1. `GET /api/tickets` retrieves tickets ordered by severity and creation time.
+2. `GET /api/tickets/{id}` retrieves one ticket.
+3. `POST /api/tickets` creates a ticket.
+4. `PATCH /api/tickets/{id}` updates ticket details and status.
+5. `DELETE /api/tickets/{id}` deletes a ticket.
+
+### Supporting endpoints
+
+1. `POST /api/severity-suggestions` requests an AI severity suggestion.
+2. `GET /actuator/health` checks backend health.
 
 ### Create a ticket
 
-```json
-{
-  "title": "Login page is unavailable",
-  "description": "Users are receiving an error when trying to sign in.",
-  "severity": "SEV2"
-}
-```
-
-New tickets start as `OPEN`. Valid severities are `SEV1`, `SEV2`, `SEV3`, and `SEV4`.
-
-### Update a ticket
-
-`PATCH /api/tickets/{id}` replaces the title, description, severity, and status, so send all four. If `status` is left out, it is treated as `OPEN`.
+Send a `POST` request to `/api/tickets` with a JSON body. New tickets default to `OPEN` status.
 
 ```json
 {
-  "title": "Login page is unavailable",
-  "description": "Users are receiving an error when trying to sign in.",
-  "severity": "SEV2",
-  "status": "RESOLVED"
+  "title": "Login page is broken",
+  "description": "Users cannot sign in",
+  "severity": "SEV1"
 }
 ```
 
-### Get a severity suggestion
+Example request:
 
-```json
-{
-  "title": "Customers unable to complete purchases",
-  "description": "Customers are receiving errors when attempting to check out."
-}
+```bash
+curl -i -X POST http://localhost:8080/api/tickets \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Login page is broken","description":"Users cannot sign in","severity":"SEV1"}'
 ```
 
-The response has the suggested severity and the model's reasoning:
+Valid severity values are `SEV1`, `SEV2`, `SEV3`, and `SEV4`. Valid status values are `OPEN` and `RESOLVED`.
 
-```json
-{
-  "suggestedSeverity": "SEV1",
-  "reasoning": "Checkout errors prevent customers from completing purchases, affecting a core business function."
-}
+## Run locally
+
+### Requirements
+
+1. JDK 25
+2. Maven
+3. Node.js and npm
+4. A MongoDB instance
+5. An OpenAI API key
+
+### Configure the backend
+
+The backend reads configuration from environment variables and can load values from a `.env` file in the repository root. Create that file with your local settings:
+
+```properties
+MONGODB_URI=mongodb://localhost:27017
+MONGODB_DATABASE=ticket_system
+OPENAI_API_KEY=your-openai-api-key
+APP_DEMO_MODE=false
 ```
 
-## Demo mode
+`OPENAI_MODEL` can be set to choose a different model. The application currently defaults to `gpt-6-luna` when that setting is not supplied. The server uses port `8080` by default. The `PORT` environment variable can override it.
 
-The live demo runs with `APP_DEMO_MODE=true`, which is set in Render's environment variables. In this mode, each ticket a visitor creates gets an `expiresAt` timestamp 24 hours after it was created, and a MongoDB TTL index on that field deletes it. Locally, `APP_DEMO_MODE` defaults to `false`, so tickets have no expiry and are never removed.
+Do not commit the `.env` file or your API key.
 
-The app only sets the timestamp and does not create the index. If you run demo mode yourself, create the TTL index in the `app_tickets` collection:
+### Start the backend
 
-```js
-use ticket_system
+From the repository root, run the tests and start the Spring Boot application:
 
-db.app_tickets.createIndex(
-    { expiresAt: 1 },
-    { expireAfterSeconds: 0 }
-)
+```bash
+mvn clean test
+mvn spring-boot:run
 ```
 
-## Tests
+The API will be available at `http://localhost:8080` when the application starts successfully.
+
+### Start the frontend
+
+Open a second terminal and run:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open the local Vite address shown in the terminal. The default address is `http://localhost:5173`.
+
+During local development, the Vite configuration proxies requests to `/api` and `/actuator` to the backend at `http://localhost:8080`.
+
+### Frontend API configuration
+
+The frontend reads `VITE_API_BASE_URL` to determine the backend API base URL. It defaults to an empty string for local development with the Vite proxy.
+
+When hosting the frontend separately from the backend, set `VITE_API_BASE_URL` to the backend's base URL in the frontend deployment environment. The backend CORS configuration must allow requests from the frontend origin.
+
+## Tests and build
+
+Run the backend test suite from the repository root:
 
 ```bash
 mvn clean test
 ```
 
-There are 15 tests, five each for the service, repository, and controller layers:
+Build and lint the frontend from the `frontend` directory:
 
-- Service tests use a mocked repository (Mockito).
-- Repository tests use `@DataMongoTest` and run against `ticket_system_test`, which they clear before each test.
-- Controller tests use `@SpringBootTest` with MockMvc and cover validation, `201` and `200` responses, and missing tickets.
+```bash
+npm run build
+npm run lint
+```
 
-The tests connect to MongoDB using the same `MONGODB_URI`. The controller tests create tickets in whatever database `MONGODB_DATABASE` points to, so use a test database and not the one behind a live deployment. There are no tests yet for the AI suggestion endpoint or for demo mode expiry.
+## Docker
 
-## Docker and deployment
-
-The `Dockerfile` has two stages. The first builds the jar with Maven on a JDK 25 image, and the second runs it on a smaller JRE 25 image.
+Build the backend image from the repository root:
 
 ```bash
 docker build -t ticket-prioritization-system .
-docker run -p 8080:8080 --env-file .env ticket-prioritization-system
 ```
 
-The `.env` file is not copied into the image, so the settings have to be passed in when the container starts. The live demo runs on Render, which provides them as environment variables instead.
+The container needs the MongoDB connection settings and OpenAI API key supplied through its runtime environment.
 
-## Known limitations
+## Notes
 
-- The update endpoint needs the full ticket in the request body.
-- There is no login, so anyone can edit tickets in the public demo.
-- The AI suggestion and demo mode expiry need tests.
+AI severity suggestions are recommendations for the user to review. They are not a substitute for confirming the real impact of an incident.
+
+The frontend and backend can be run locally as separate applications. For a separate frontend deployment, configure the API base URL and the backend's allowed CORS origins.
