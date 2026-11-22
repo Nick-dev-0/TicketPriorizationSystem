@@ -78,7 +78,7 @@ function TicketForm({ onTicketCreated }: TicketFormProps) {
                             onChange={(event) => setTitle(event.target.value)}
                             id="title"
                             name="title"
-                            placeholder="e.g. Checkout returns 500 after deploy"
+                            placeholder="e.g. Password reset emails not being delivered"
                             required
                         />
                     </div>
@@ -92,7 +92,7 @@ function TicketForm({ onTicketCreated }: TicketFormProps) {
                             onChange={(event) => setDescription(event.target.value)}
                             name="description"
                             rows={3}
-                            placeholder="What happened, who is affected, and since when?"
+                            placeholder="Describe the issue, who is affected, and when it started."
                             required
                         />
                     </div>
