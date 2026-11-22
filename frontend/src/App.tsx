@@ -106,38 +106,43 @@ function App() {
     };
 
     return (
-        <main className="app-shell">
-            <div className="container app-container py-5">
-                <header className="app-header">
-                    <div>
-                        <h1 className="app-title">Ticket Prioritization</h1>
-                        <p className="app-subtitle">Prioritize, track, and resolve support tickets.</p>
-                    </div>
-
-                    <div className="system-status-container">
-                        <div className={`system-status system-status-${systemStatus}`} role="status">
-                            <span className="system-status-dot" aria-hidden="true"></span>
-                            {statusLabels[systemStatus]}
+            <main className="app-shell">
+                <div className="container app-container py-5">
+                    <header className="app-header">
+                        <div>
+                            <h1 className="app-title">Ticket Prioritization</h1>
+                            <p className="app-subtitle">
+                                Support queue ordered by severity, then creation date.
+                            </p>
                         </div>
 
-                        {systemStatus === "connecting" && (
-                            <p className="system-status-message">
-                                The demo backend may take up to 2 minutes to wake after inactivity.
-                            </p>
-                        )}
-                    </div>
+                        <div className="system-status-container">
+                            <div
+                                className={`system-status system-status-${systemStatus}`}
+                                role="status"
+                                aria-live="polite">
+                                <span className="system-status-dot" aria-hidden="true"></span>
+                                {statusLabels[systemStatus]}
+                            </div>
 
-                </header>
+                            {systemStatus === "connecting" && (
+                                <p className="system-status-message">
+                                    The demo backend runs on a free tier and can take up to
+                                    2 minutes to wake after inactivity.
+                                </p>
+                            )}
+                        </div>
+                    </header>
 
-                <TicketForm onTicketCreated={handleTicketCreated} />
+                    <TicketForm onTicketCreated={handleTicketCreated} />
 
-                <TicketList
-                    tickets={tickets}
-                    onTicketUpdated={handleTicketUpdated}
-                    onTicketDeleted={handleTicketDeleted}/>
-            </div>
-        </main>
-    );
-}
+                    <TicketList
+                        tickets={tickets}
+                        onTicketUpdated={handleTicketUpdated}
+                        onTicketDeleted={handleTicketDeleted}/>
+                </div>
+            </main>
+        );
+    }
 
 export default App;

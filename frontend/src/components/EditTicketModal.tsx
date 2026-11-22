@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import type { SubmitEvent } from "react";
 import { deleteTicket, updateTicket } from "../services/ticketService";
@@ -60,7 +59,10 @@ function EditTicketModal({ ticket, onClose, onTicketUpdated, onTicketDeleted }: 
                     <div className="modal-content">
 
                         <div className="modal-header">
-                            <h4 className="modal-title" id="editTicketModalLabel">Edit Ticket</h4>
+                            <h2 className="modal-title" id="editTicketModalLabel">
+                                Edit ticket
+                                <span className="modal-ref mono">#{ticket.id.slice(0, 8)}</span>
+                            </h2>
                             <button type="button" className="btn-close" aria-label="Close" onClick={onClose} />
                         </div>
 
@@ -93,48 +95,53 @@ function EditTicketModal({ ticket, onClose, onTicketUpdated, onTicketDeleted }: 
                                     />
                                 </div>
 
-                                <div className="mb-3">
-                                    <label htmlFor="severity-modal" className="form-label">Severity</label>
-                                    <select
-                                        className="form-select"
-                                        id="severity-modal"
-                                        name="severity"
-                                        value={severity}
-                                        onChange={(event) => setSeverity(event.target.value as SeverityLevel)}
-                                        required
-                                    >
-                                        <option value="SEV1">SEV1</option>
-                                        <option value="SEV2">SEV2</option>
-                                        <option value="SEV3">SEV3</option>
-                                        <option value="SEV4">SEV4</option>
-                                    </select>
+                                <div className="row g-3">
+                                    <div className="col-sm-6">
+                                        <label htmlFor="severity-modal" className="form-label">Severity</label>
+                                        <select
+                                            className="form-select"
+                                            id="severity-modal"
+                                            name="severity"
+                                            value={severity}
+                                            onChange={(event) => setSeverity(event.target.value as SeverityLevel)}
+                                            required
+                                        >
+                                            <option value="SEV1">SEV1 · Critical</option>
+                                            <option value="SEV2">SEV2 · High</option>
+                                            <option value="SEV3">SEV3 · Medium</option>
+                                            <option value="SEV4">SEV4 · Low</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="col-sm-6">
+                                        <label htmlFor="status-modal" className="form-label">Status</label>
+                                        <select
+                                            className="form-select"
+                                            id="status-modal"
+                                            name="status"
+                                            value={status}
+                                            onChange={(event) => setStatus(event.target.value as TicketStatus)}
+                                            required
+                                        >
+                                            <option value="OPEN">Open</option>
+                                            <option value="RESOLVED">Resolved</option>
+                                        </select>
+                                    </div>
                                 </div>
 
-                                <div className="mb-3">
-                                    <label htmlFor="status-modal" className="form-label">Status</label>
-                                    <select
-                                        className="form-select"
-                                        id="status-modal"
-                                        name="status"
-                                        value={status}
-                                        onChange={(event) => setStatus(event.target.value as TicketStatus)}
-                                        required
-                                    >
-                                        <option value="OPEN">OPEN</option>
-                                        <option value="RESOLVED">RESOLVED</option>
-                                    </select>
-                                </div>
-                                {deleteError && (<div className="alert alert-danger" role="alert">{deleteError}</div>)}
+                                {deleteError && (
+                                    <div className="notice notice-error mt-3 mb-0" role="alert">{deleteError}</div>
+                                )}
                             </div>
 
                             <div className="modal-footer">
                                 {ticket.expiresAt != null && (
-                                    <button type="button" className="btn btn-danger me-auto" onClick={handleDelete} disabled={isDeleting}>
-                                        {isDeleting ? "Deleting..." : "Delete Ticket"}
+                                    <button type="button" className="btn btn-delete me-auto" onClick={handleDelete} disabled={isDeleting}>
+                                        {isDeleting ? "Deleting…" : "Delete ticket"}
                                     </button>
                                 )}
-                                <button type="button" className="btn btn-secondary" onClick={onClose} disabled={isDeleting}>Cancel</button>
-                                <button type="submit" className="btn btn-primary" disabled={isDeleting}>Save Changes</button>
+                                <button type="button" className="btn btn-quiet" onClick={onClose} disabled={isDeleting}>Cancel</button>
+                                <button type="submit" className="btn btn-primary" disabled={isDeleting}>Save changes</button>
                             </div>
 
                         </form>

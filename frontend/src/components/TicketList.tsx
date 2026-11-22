@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import type { Ticket, SeverityLevel } from "../models/ticket";
 import EditTicketModal from "./EditTicketModal";
@@ -51,60 +50,44 @@ function TicketList({ tickets, onTicketUpdated, onTicketDeleted }: TicketListPro
         <section className="dashboard-panel">
             <div className="panel-body">
                 <div className="panel-heading">
-                    <div>
-                        <h2 className="panel-title">
-                            {showOpenTickets && showResolvedTickets
-                                ? "All Tickets"
-                                : showOpenTickets
-                                    ? "Open Tickets"
-                                    : showResolvedTickets
-                                        ? "Resolved Tickets"
-                                        : "No Tickets Selected"}
-                        </h2>
-                    </div>
+                    <h2 className="panel-title">
+                        {showOpenTickets && showResolvedTickets
+                            ? "All tickets"
+                            : showOpenTickets
+                                ? "Open tickets"
+                                : showResolvedTickets
+                                    ? "Resolved tickets"
+                                    : "No status selected"}
+                    </h2>
 
-                    <span className="queue-total">{tickets.length} total</span>
+                    <span className="queue-total">
+                        {openTicketCount} open · {resolvedTicketCount} resolved
+                    </span>
                 </div>
 
-                <div className="ticket-filters mb-3">
-                    <div className="ticket-filters-body">
-                        <div className="row g-0">
+                <div className="ticket-filters" role="group" aria-label="Filter tickets by status">
+                    <div className="filter-option">
+                        <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="openTicketFilter"
+                            checked={showOpenTickets}
+                            onChange={(event) => setShowOpenTickets(event.target.checked)}
+                        />
+                        <label className="filter-label" htmlFor="openTicketFilter">Open</label>
+                        <span className="filter-count">{openTicketCount}</span>
+                    </div>
 
-                            <div className="col-6 text-center border-end py-3">
-                                <div className="form-check d-inline-block">
-                                    <input
-                                        type="checkbox"
-                                        className="form-check-input"
-                                        id="openTicketFilter"
-                                        checked={showOpenTickets}
-                                        onChange={(event) => setShowOpenTickets(event.target.checked)}
-                                    />
-                                    <label className="form-check-label" htmlFor="openTicketFilter">Open</label>
-                                </div>
-
-                                <div className="mt-1">
-                                    <small className="text-muted">{openTicketCount} tickets</small>
-                                </div>
-                            </div>
-
-                            <div className="col-6 text-center py-3">
-                                <div className="form-check d-inline-block">
-                                    <input
-                                        type="checkbox"
-                                        className="form-check-input"
-                                        id="resolvedTicketFilter"
-                                        checked={showResolvedTickets}
-                                        onChange={(event) => setShowResolvedTickets(event.target.checked)}
-                                    />
-                                    <label className="form-check-label" htmlFor="resolvedTicketFilter">Resolved</label>
-                                </div>
-
-                                <div className="mt-1">
-                                    <small className="text-muted">{resolvedTicketCount} tickets</small>
-                                </div>
-                            </div>
-
-                        </div>
+                    <div className="filter-option">
+                        <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="resolvedTicketFilter"
+                            checked={showResolvedTickets}
+                            onChange={(event) => setShowResolvedTickets(event.target.checked)}
+                        />
+                        <label className="filter-label" htmlFor="resolvedTicketFilter">Resolved</label>
+                        <span className="filter-count">{resolvedTicketCount}</span>
                     </div>
                 </div>
 
@@ -112,50 +95,51 @@ function TicketList({ tickets, onTicketUpdated, onTicketDeleted }: TicketListPro
                     <table className="table table-hover align-middle ticket-table">
                         <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">
                                 <button
                                     type="button"
-                                    className="btn btn-sm btn-outline-secondary py-0 px-2"
-                                    onClick={handleSeveritySort}>
-                                    <span className="fw-bold">Severity</span>
-                                    <span className="ms-1">{severitySortOrder === "highest" ? "↓" : "↑"}</span>
+                                    className="sort-button"
+                                    onClick={handleSeveritySort}
+                                    aria-label={`Sort by severity, currently ${severitySortOrder} first`}>
+                                    Severity <span aria-hidden="true">{severitySortOrder === "highest" ? "↓" : "↑"}</span>
                                 </button>
                             </th>
-                            <th>Created Date</th>
-                            <th>Status</th>
-                            <th>Edit</th>
+                            <th scope="col">Created</th>
+                            <th scope="col">Status</th>
+                            <th scope="col"><span className="visually-hidden">Actions</span></th>
                         </tr>
                         </thead>
 
                         <tbody>
                         {sortedTickets.length === 0 ? (
                             <tr>
-                                <td colSpan={6} className="text-center text-muted py-3">
+                                <td colSpan={6} className="empty-row">
                                     No tickets match the selected filters.
                                 </td>
                             </tr>
                         ) : (
                             sortedTickets.map(ticket => (
                                 <tr key={ticket.id}>
-                                    <td>{ticket.title}</td>
-                                    <td>{ticket.description}</td>
+                                    <td className="cell-title">{ticket.title}</td>
+                                    <td className="cell-description">{ticket.description}</td>
                                     <td>
-                                        <span className={`badge severity-${ticket.severity.toLowerCase()}`}>
+                                        <span className={`tag severity-${ticket.severity.toLowerCase()}`}>
                                             {ticket.severity}
                                         </span>
                                     </td>
-                                    <td>{new Date(ticket.timestamp).toLocaleString()}</td>
+                                    <td className="cell-time mono">{new Date(ticket.timestamp).toLocaleString()}</td>
                                     <td>
-                                        <span className={`badge status-${ticket.status.toLowerCase()}`}>
+                                        <span className={`tag status-${ticket.status.toLowerCase()}`}>
                                             {ticket.status}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td className="cell-actions">
                                         <button
                                             type="button"
                                             className="btn btn-outline-primary btn-sm"
+                                            aria-label={`Edit ${ticket.title}`}
                                             onClick={() => setTicketToEdit(ticket)}>
                                             Edit
                                         </button>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import type { SubmitEvent } from "react";
 import { createTicket, getSeveritySuggestion } from "../services/ticketService";
@@ -65,9 +64,7 @@ function TicketForm({ onTicketCreated }: TicketFormProps) {
         <section className="dashboard-panel mb-4">
             <div className="panel-body">
                 <div className="panel-heading">
-                    <div>
-                        <h2 className="panel-title">Create a ticket</h2>
-                    </div>
+                    <h2 className="panel-title">Create ticket</h2>
                 </div>
 
                 <form id="create-ticket-form" onSubmit={handleFormSubmit}>
@@ -81,7 +78,7 @@ function TicketForm({ onTicketCreated }: TicketFormProps) {
                             onChange={(event) => setTitle(event.target.value)}
                             id="title"
                             name="title"
-                            placeholder="Write the ticket title..."
+                            placeholder="e.g. Checkout returns 500 after deploy"
                             required
                         />
                     </div>
@@ -95,12 +92,12 @@ function TicketForm({ onTicketCreated }: TicketFormProps) {
                             onChange={(event) => setDescription(event.target.value)}
                             name="description"
                             rows={3}
-                            placeholder="Write the ticket description..."
+                            placeholder="What happened, who is affected, and since when?"
                             required
                         />
                     </div>
 
-                    <div className="mb-3">
+                    <div className="mb-4">
                         <div className="d-flex justify-content-between align-items-center mb-2">
                             <label htmlFor="severity" className="form-label mb-0">Severity</label>
                             <button
@@ -108,7 +105,7 @@ function TicketForm({ onTicketCreated }: TicketFormProps) {
                                 className="btn btn-outline-primary btn-sm"
                                 onClick={handleSuggestion}
                                 disabled={isSuggesting}>
-                                {isSuggesting ? "Awaiting..." : "AI Suggestion"}
+                                {isSuggesting ? "Analyzing…" : "Suggest severity"}
                             </button>
                         </div>
 
@@ -119,32 +116,37 @@ function TicketForm({ onTicketCreated }: TicketFormProps) {
                             value={severity}
                             onChange={(event) => setSeverity(event.target.value as SeverityLevel)}
                             required>
-                            <option value="SEV1">SEV1</option>
-                            <option value="SEV2">SEV2</option>
-                            <option value="SEV3">SEV3</option>
-                            <option value="SEV4">SEV4</option>
+                            <option value="SEV1">SEV1 · Critical</option>
+                            <option value="SEV2">SEV2 · High</option>
+                            <option value="SEV3">SEV3 · Medium</option>
+                            <option value="SEV4">SEV4 · Low</option>
                         </select>
 
                         {suggestion && (
-                            <div className="alert alert-info mt-3">
-                                <h5>AI Recommended Severity: {suggestion.suggestedSeverity}</h5>
-                                <p>{suggestion.reasoning}</p>
+                            <div className="suggestion" role="status">
+                                <div className="suggestion-header">
+                                    <span className="suggestion-label">AI suggestion</span>
+                                    <span className={`tag severity-${suggestion.suggestedSeverity.toLowerCase()}`}>
+                                        {suggestion.suggestedSeverity}
+                                    </span>
+                                </div>
+                                <p className="suggestion-reasoning">{suggestion.reasoning}</p>
                                 <button
                                     type="button"
-                                    className="btn btn-primary btn-sm"
+                                    className="btn btn-outline-primary btn-sm"
                                     onClick={handleApplySuggestion}>
-                                    Use Recommendation
+                                    Apply {suggestion.suggestedSeverity}
                                 </button>
                             </div>
                         )}
                     </div>
 
                     {submissionError && (
-                        <div className="alert alert-danger" role="alert">{submissionError}</div>
+                        <div className="notice notice-error" role="alert">{submissionError}</div>
                     )}
 
                     <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                        {isSubmitting ? "Creating..." : "Create Ticket"}
+                        {isSubmitting ? "Creating…" : "Create ticket"}
                     </button>
                 </form>
             </div>
