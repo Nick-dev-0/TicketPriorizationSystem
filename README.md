@@ -4,6 +4,10 @@ A full stack support ticket application built with Java, Spring Boot, React, and
 
 The dashboard supports ticket management and status filtering. Users can also request an AI assisted severity suggestion based on a ticket's title and description, review the recommendation, and choose whether to apply it.
 
+## Application Preview
+
+![Ticket Prioritization System Dashboard](docs/images/ticket-dashboard.png)
+
 ## Features
 
 ### Ticket management
